@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const pageTitle = "简历";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <div class="cv-container">
+    <div class="cv-download">
+      <a href="/CV.pdf.pdf" target="_blank" class="btn btn-primary" download="Jianye Jimi Peng_CV.pdf">
+        下载 PDF
+      </a>
+    </div>
+    
+    <div class="cv-preview" id="pdf-container">
+      <div class="cv-loading">正在加载简历...</div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  async function renderPDF() {
+    const container = document.getElementById('pdf-container');
+    if (!container) return;
+
+    // 等待 PDF.js 加载完成
+    // @ts-ignore - PDF.js 在全局作用域
+    if (typeof pdfjsLib === 'undefined') {
+      setTimeout(renderPDF, 100);
+      return;
+    }
+
+    // 设置 worker
+    // @ts-ignore - PDF.js 在全局作用域
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    try {
+      // 加载 PDF
+      // @ts-ignore - PDF.js 在全局作用域
+      const loadingTask = pdfjsLib.getDocument('/CV.pdf.pdf');
+      const pdf = await loadingTask.promise;
+      
+      // 清除加载提示
+      container.innerHTML = '';
+      
+      // 渲染所有页面
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1.5 });
+        
+        // 创建 canvas
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        canvas.className = 'cv-page';
+        
+        // 渲染页面
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport
+        };
+        
+        await page.render(renderContext).promise;
+        container.appendChild(canvas);
+      }
+    } catch (error) {
+      console.error('PDF 加载失败:', error);
+      container.innerHTML = '<div class="cv-error">无法加载简历，请<a href="/CV.pdf.pdf" download="Jianye Jimi Peng_CV.pdf">点击下载</a>查看。</div>';
+    }
+  }
+
+  // 页面加载完成后渲染 PDF
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderPDF);
+  } else {
+    renderPDF();
+  }
+</script>
+
+<style>
+  .cv-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+    margin: var(--spacing-xl) 0;
+  }
+
+  .cv-preview {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: var(--color-bg);
+  }
+
+  .cv-page {
+    width: 100%;
+    height: auto;
+    display: block;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-md);
+    background: var(--color-white);
+  }
+
+  .cv-loading,
+  .cv-error {
+    padding: var(--spacing-xl);
+    text-align: center;
+    color: var(--color-text-secondary);
+  }
+
+  .cv-error a {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .cv-download {
+    margin-bottom: var(--spacing-md);
+  }
+
+  @media screen and (max-width: 900px) {
+    .cv-preview {
+      max-width: 100%;
+      padding: var(--spacing-md);
+    }
+  }
+</style>

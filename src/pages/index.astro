@@ -1,11 +1,37 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Landing from '../components/Landing.astro';
 import Greeting from '../components/Greeting';
 const pageTitle = "首页";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <Landing />
   <Greeting client:load messages={["Hej", "Hello", "你好", "どうも"]} />
 </BaseLayout>
+
+<style>
+  .greeting {
+    text-align: center;
+    padding: var(--spacing-3xl) 0;
+  }
+
+  .greeting-text {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-text);
+    margin: 0;
+    border: none;
+    padding: 0;
+    text-transform: none;
+    letter-spacing: var(--letter-spacing-normal);
+  }
+
+  .greeting-cursor {
+    animation: blink 1s infinite;
+    color: var(--color-primary);
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+</style>

@@ -2,38 +2,71 @@
 import BaseLayout from './BaseLayout.astro';
 const { frontmatter } = Astro.props;
 ---
+
 <BaseLayout pageTitle={frontmatter.title}>
-  <p><em>{frontmatter.description}</em></p>
-  <p>{frontmatter.pubDate.toString().slice(0,10)}</p>
+  <div class="post-meta">
+    <p class="post-description"><em>{frontmatter.description}</em></p>
+    <p class="post-date">{frontmatter.pubDate.toString().slice(0,10)}</p>
+    <p class="post-author">作者：{frontmatter.author}</p>
+  </div>
 
-  <p>作者：{frontmatter.author}</p>
+  {frontmatter.image && (
+    <img 
+      src={frontmatter.image.url} 
+      alt={frontmatter.image.alt}
+      class="post-image"
+    />
+  )}
 
-  <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} />
-
-  <div class="tags">
+  <div class="tags-container">
     {frontmatter.tags.map((tag: string) => (
-      <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
+      <span class="tag">
+        <a href={`/tags/${tag}`}>{tag}</a>
+      </span>
     ))}
   </div>
 
-  <slot />
+  <article class="post-content">
+    <slot />
+  </article>
 </BaseLayout>
+
 <style>
-  a {
-    color: #00539F;
+  .post-meta {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: var(--border-width-thin) solid var(--color-border-light);
   }
 
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
+  .post-description {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    font-style: italic;
   }
 
-  .tag {
-    margin: 0.25em;
-    border: dotted 1px #a1a1a1;
-    border-radius: .5em;
-    padding: .5em 1em;
-    font-size: 1.15em;
-    background-color: #F8FCFD;
+  .post-date,
+  .post-author {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin: var(--spacing-xs) 0;
+  }
+
+  .post-image {
+    width: 100%;
+    max-width: 600px;
+    margin: var(--spacing-xl) auto;
+    border: var(--border-width-thin) solid var(--color-border-light);
+  }
+
+  .post-content {
+    margin-top: var(--spacing-xl);
+  }
+
+  .post-content :global(h2) {
+    margin-top: var(--spacing-2xl);
+  }
+
+  .post-content :global(h3) {
+    margin-top: var(--spacing-xl);
   }
 </style>

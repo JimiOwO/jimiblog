@@ -1,5 +1,20 @@
 ---
 ---
+
 <button aria-expanded="false" aria-controls="main-menu" class="menu">
   Menu
 </button>
+
+<style>
+  /* 默认在桌面端隐藏 */
+  .menu {
+    display: none;
+  }
+
+  /* 只在移动设备上显示 */
+  @media screen and (max-width: 635px) {
+    .menu {
+      display: block !important;
+    }
+  }
+</style>

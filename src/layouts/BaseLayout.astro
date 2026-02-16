@@ -33,44 +33,5 @@ const { pageTitle } = Astro.props;
     <script>
       import "../scripts/menu.js"
     </script>
-
-    <style>
-      /* 顶部贯穿红线条 */
-      .top-line {
-        height: 6px;
-        background-color: var(--famicom-red);
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 100;
-      }
-
-      /* 内容区的淡入动画 */
-      .main-content {
-        max-width: 900px;
-        margin: 2rem auto;
-        padding: 0 1.5rem;
-        animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      .page-header {
-        position: relative;
-        margin-bottom: 2rem;
-      }
-
-      /* 标题旁的小装饰，增加设计感 */
-      .accent-dot {
-        width: 12px;
-        height: 12px;
-        background-color: var(--famicom-red);
-        margin-top: -0.5rem;
-      }
-
-      @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style>
   </body>
 </html>

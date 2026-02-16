@@ -1,14 +1,187 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BlogPost from '../components/BlogPost.astro';
+
 const allPosts = Object.values(import.meta.glob('./posts/*.md', { eager: true }));
+const allTags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).flat())].sort();
 const pageTitle = "博客";
 ---
+
 <BaseLayout pageTitle={pageTitle}>
-    <h1>我的 Astro 学习博客</h1>
-    <p>这是我的 Astro 学习笔记</p>
-    <ul>
-      {allPosts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title} />)}
-    </ul>
-    </ul>
+  <div class="blog-container">
+    <!-- 标签筛选器 -->
+    <div class="blog-filters">
+      <div class="filter-section">
+        <h2 class="filter-title">标签</h2>
+        <div class="tags-container" id="tags-container">
+          <button 
+            class="tag tag-filter active" 
+            data-tag="all"
+            data-filter="all"
+          >
+            全部
+          </button>
+          {allTags.map((tag) => (
+            <button 
+              class="tag tag-filter" 
+              data-tag={tag}
+              data-filter={tag}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- 博客文章列表 -->
+    <div class="blog-posts" id="blog-posts">
+      {allPosts.map((post: any) => (
+        <div 
+          class="blog-post-wrapper" 
+          data-tags={post.frontmatter.tags.join(',')}
+        >
+          <BlogPost 
+            url={post.url} 
+            title={post.frontmatter.title}
+            tags={post.frontmatter.tags}
+          />
+        </div>
+      ))}
+    </div>
+
+    <!-- 无结果提示 -->
+    <div class="no-results" id="no-results" style="display: none;">
+      <p>没有找到匹配标签的文章。</p>
+    </div>
+  </div>
 </BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll('.tag-filter');
+    const postWrappers = document.querySelectorAll('.blog-post-wrapper');
+    const noResults = document.getElementById('no-results');
+
+    function filterPosts(selectedTag: string) {
+      let visibleCount = 0;
+
+      postWrappers.forEach((wrapper) => {
+        const element = wrapper as HTMLElement;
+        const tags = element.getAttribute('data-tags')?.split(',') || [];
+        
+        if (selectedTag === 'all' || tags.includes(selectedTag)) {
+          element.style.display = 'block';
+          visibleCount++;
+        } else {
+          element.style.display = 'none';
+        }
+      });
+
+      // 显示/隐藏无结果提示
+      if (noResults) {
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+
+      // 更新按钮状态
+      filterButtons.forEach((button) => {
+        const element = button as HTMLElement;
+        if (element.getAttribute('data-filter') === selectedTag) {
+          element.classList.add('active');
+        } else {
+          element.classList.remove('active');
+        }
+      });
+    }
+
+    // 为每个筛选按钮添加点击事件
+    filterButtons.forEach((button) => {
+      const element = button as HTMLElement;
+      element.addEventListener('click', () => {
+        const tag = element.getAttribute('data-filter') || 'all';
+        filterPosts(tag);
+      });
+    });
+  });
+</script>
+
+<style>
+  .blog-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .blog-filters {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: var(--border-width-thin) solid var(--color-border-light);
+  }
+
+  .filter-section {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .filter-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .tag-filter {
+    cursor: pointer;
+    border: var(--border-width-thin) solid var(--color-border);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition: all var(--transition-base);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+  }
+
+  .tag-filter:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-secondary);
+    transform: translateY(-1px);
+  }
+
+  .tag-filter.active {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-color: var(--color-primary);
+  }
+
+  .blog-posts {
+    list-style: none;
+    padding: 0;
+  }
+
+  .blog-post-wrapper {
+    margin-bottom: var(--spacing-md);
+    transition: opacity var(--transition-base);
+  }
+
+  .no-results {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--color-text-secondary);
+  }
+
+  @media screen and (max-width: 768px) {
+    .tags-container {
+      gap: var(--spacing-xs);
+    }
+
+    .tag-filter {
+      font-size: var(--font-size-xs);
+      padding: var(--spacing-xs) var(--spacing-sm);
+    }
+  }
+</style>
