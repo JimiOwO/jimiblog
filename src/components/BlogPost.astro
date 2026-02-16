@@ -1,16 +1,20 @@
 ---
-const { url, title, tags = [] } = Astro.props;
+const { url, title, tags = [], pubDate } = Astro.props;
+const dateStr = pubDate ? new Date(pubDate).toISOString().slice(0, 10) : '';
 ---
 
 <li class="blog-post-item">
   <a href={url} class="blog-post-link">{title}</a>
-  {tags && tags.length > 0 && (
-    <div class="blog-post-tags">
-      {tags.map((tag: string) => (
-        <span class="tag tag-small">{tag}</span>
-      ))}
-    </div>
-  )}
+  <div class="blog-post-meta">
+    {dateStr && <span class="blog-post-date">{dateStr}</span>}
+    {tags && tags.length > 0 && (
+      <div class="blog-post-tags">
+        {tags.map((tag: string) => (
+          <span class="tag tag-small">{tag}</span>
+        ))}
+      </div>
+    )}
+  </div>
 </li>
 
 <style>
@@ -29,7 +33,7 @@ const { url, title, tags = [] } = Astro.props;
   }
 
   .blog-post-link {
-    font-size: var(--font-size-lg);
+    font-size: clamp(1.25rem, 3vw, var(--font-size-2xl));
     font-weight: var(--font-weight-bold);
     color: var(--color-text);
     display: block;
@@ -41,11 +45,23 @@ const { url, title, tags = [] } = Astro.props;
     border-bottom: var(--border-width-medium) solid var(--color-primary);
   }
 
+  .blog-post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+  }
+
+  .blog-post-date {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
   .blog-post-tags {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-xs);
-    margin-top: var(--spacing-xs);
   }
 
   .tag-small {

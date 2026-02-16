@@ -4,11 +4,18 @@ const { frontmatter } = Astro.props;
 ---
 
 <BaseLayout pageTitle={frontmatter.title}>
-  <div class="post-meta">
+  <header class="post-header">
+    <h1 class="post-title">{frontmatter.title}</h1>
     <p class="post-description"><em>{frontmatter.description}</em></p>
-    <p class="post-date">{frontmatter.pubDate.toString().slice(0,10)}</p>
-    <p class="post-author">作者：{frontmatter.author}</p>
-  </div>
+    <p class="post-date">{frontmatter.pubDate.toString().slice(0, 10)}</p>
+    <div class="post-tags">
+      {frontmatter.tags.map((tag: string) => (
+        <span class="tag">
+          <a href={`/tags/${tag}`}>{tag}</a>
+        </span>
+      ))}
+    </div>
+  </header>
 
   {frontmatter.image && (
     <img 
@@ -18,37 +25,56 @@ const { frontmatter } = Astro.props;
     />
   )}
 
-  <div class="tags-container">
-    {frontmatter.tags.map((tag: string) => (
-      <span class="tag">
-        <a href={`/tags/${tag}`}>{tag}</a>
-      </span>
-    ))}
-  </div>
-
   <article class="post-content">
     <slot />
   </article>
 </BaseLayout>
 
 <style>
-  .post-meta {
+  .post-header {
     margin-bottom: var(--spacing-xl);
     padding-bottom: var(--spacing-lg);
     border-bottom: var(--border-width-thin) solid var(--color-border-light);
+  }
+
+  .post-title {
+    font-size: clamp(1.75rem, 5vw, var(--font-size-4xl));
+    font-weight: var(--font-weight-black);
+    color: var(--color-text);
+    margin: 0 0 var(--spacing-md) 0;
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    border: none;
+    padding-left: 0;
+    text-transform: none;
   }
 
   .post-description {
     font-size: var(--font-size-lg);
     color: var(--color-text-secondary);
     font-style: italic;
+    margin: 0 0 var(--spacing-sm) 0;
   }
 
-  .post-date,
-  .post-author {
+  .post-date {
     font-size: var(--font-size-sm);
     color: var(--color-text-secondary);
-    margin: var(--spacing-xs) 0;
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .post-tags .tag {
+    font-size: var(--font-size-s);
+    padding: 2px var(--spacing-xs);
+  }
+
+  .post-tags .tag a {
+    font-size: inherit;
   }
 
   .post-image {
