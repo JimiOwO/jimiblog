@@ -1,43 +1,33 @@
-# Astro Starter Kit: Minimal
+# 🐧 pengui.dev - 个人网站
 
-```sh
-npm create astro@latest -- --template minimal
-```
+欢迎来到我的个人站点仓库！这是我展示项目、记录想法以及实验新技术的空间。
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 🚀 访问地址
+🔗 **[https://pengui.dev](https://pengui.dev)**
 
-## 🚀 Project Structure
+---
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🛠️ 技术栈
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+这个网站追求极致的加载速度和简洁的代码结构：
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+- **框架**: [Astro](https://astro.build/) (Island Architecture)
+- **基础**: HTML5 & 原生 CSS3 (保持轻量与灵活性)
+- **AI 辅助**: 由 **Gemini 4o** 协作完成代码优化与内容构思
+- **部署**: [GitHub Pages](https://pages.github.com/)
+- **域名**: 托管于自定义域名 `pengui.dev`
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## ✨ 项目亮点
 
-Any static assets, like images, can be placed in the `public/` directory.
+- **高性能**: 利用 Astro 的静态生成 (SSG) 确保近乎完美的 Lighthouse 分数。
+- **干净的代码**: 尽量减少 JavaScript 的使用，回归 Web 开发的本质。
+- **响应式设计**: 完美适配手机、平板和桌面端。
 
-## 🧞 Commands
+## 💻 本地开发
 
-All commands are run from the root of the project, from a terminal:
+如果你想在本地运行这个项目，请确保已安装 [Node.js](https://nodejs.org/)。
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+1. **克隆仓库**
+   ```bash
+   git clone [https://github.com/你的用户名/你的仓库名.git](https://github.com/你的用户名/你的仓库名.git)
+   cd 你的仓库名

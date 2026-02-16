@@ -69,4 +69,31 @@ const { frontmatter } = Astro.props;
   .post-content :global(h3) {
     margin-top: var(--spacing-xl);
   }
+
+  /* 正文内插入的图片：Markdown 写法 ![](/images/xxx.jpg) 或 ![说明](/images/xxx.jpg) */
+  .post-content :global(img) {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: var(--spacing-xl) 0;
+    border-radius: var(--border-radius-sm);
+    border: var(--border-width-thin) solid var(--color-border-light);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .post-content :global(figure) {
+    margin: var(--spacing-xl) 0;
+  }
+
+  .post-content :global(figure img) {
+    margin: 0;
+  }
+
+  .post-content :global(figcaption) {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-align: center;
+    margin-top: var(--spacing-sm);
+  }
 </style>
