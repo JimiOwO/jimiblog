@@ -2,12 +2,37 @@
 const { platform, URL } = Astro.props;
 ---
 <style>
-    a {
-        padding: 0.5 rem 1rem;
-        color: white;
-        background-color: #61aeba;
-        text-decoration: none;
-    }
+  a {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    /* 使用之前定义的红色 */
+    background-color: #b32a25; 
+    color: white;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    
+    /* 镜之边缘的斜角感或红白机的硬朗感 */
+    border: none;
+    border-bottom: 4px solid #821d1a; /* 底部深色，制造立体感 */
+    margin-right: 10px;
+    cursor: pointer;
+    transition: all 0.1s active;
+  }
+
+  a:hover {
+    background-color: #ce9d31; /* 悬停变成红白机金 */
+    border-bottom: 4px solid #a67c22;
+    transform: translateY(-2px); /* 轻轻上浮 */
+  }
+
+  a:active {
+    border-bottom-width: 0; /* 按下效果 */
+    transform: translateY(2px);
+  }
 </style>
 
-<a href={`${URL}`}>{platform}</a>
+<a href={URL} target="_blank" rel="noopener noreferrer">{platform}</a>
