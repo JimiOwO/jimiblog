@@ -7,19 +7,20 @@ const allTags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).f
 const pageTitle = "博客";
 ---
 
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle} pageTitleZh="博客" pageTitleEn="Blog">
   <div class="blog-container">
     <!-- 标签筛选器 -->
     <div class="blog-filters">
       <div class="filter-section">
-        <h2 class="filter-title">标签</h2>
+        <h2 class="filter-title"><span class="lang-zh">标签</span><span class="lang-en">Tags</span></h2>
         <div class="tags-container" id="tags-container">
           <button 
             class="tag tag-filter active" 
             data-tag="all"
             data-filter="all"
           >
-            全部
+            <span class="lang-zh">全部</span>
+            <span class="lang-en">All</span>
           </button>
           {allTags.map((tag) => (
             <button 
@@ -52,7 +53,7 @@ const pageTitle = "博客";
 
     <!-- 无结果提示 -->
     <div class="no-results" id="no-results" style="display: none;">
-      <p>没有找到匹配标签的文章。</p>
+      <p><span class="lang-zh">没有找到匹配标签的文章。</span><span class="lang-en">No posts match this tag.</span></p>
     </div>
   </div>
 </BaseLayout>

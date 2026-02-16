@@ -50,12 +50,14 @@ const normalized = platform.toLowerCase();
                 border-color var(--transition-base),
                 transform var(--transition-fast),
                 box-shadow var(--transition-base);
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   .social-link:hover {
     border-color: var(--color-primary);
     background-color: var(--color-bg-secondary);
-    transform: translateY(-1px);
+    transform: translateY(-1px) translateZ(0);
     box-shadow: var(--shadow-sm);
   }
 

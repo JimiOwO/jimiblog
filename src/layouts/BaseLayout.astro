@@ -3,28 +3,27 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-const { pageTitle } = Astro.props;
+const { pageTitle, pageTitleZh = pageTitle, pageTitleEn = pageTitle } = Astro.props;
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
-<html lang="zh">
+<html lang="zh" data-page-title-zh={pageTitleZh} data-page-title-en={pageTitleEn}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>{pageTitle} | Pengui.dev</title>
+    <title>{pageTitleZh} | Pengui.dev</title>
+    <script is:inline>
+      (function(){var l=localStorage.getItem('lang');var next=(l==='en')?'en':'zh';document.documentElement.lang=next;document.documentElement.classList.toggle('lang-en',next==='en');document.documentElement.classList.toggle('lang-zh',next==='zh');var t=document.documentElement.getAttribute(next==='en'?'data-page-title-en':'data-page-title-zh');if(t)document.title=t+' | Pengui.dev';})();
+    </script>
   </head>
   <body>
     <div class="top-line"></div>
 
-    <Header />
+    <Header currentPath={currentPath} />
 
     <main class="main-content">
-      <div class="page-header">
-        <h1>{pageTitle}</h1>
-        <div class="accent-dot"></div>
-      </div>
-
       <slot />
     </main>
 
@@ -32,6 +31,21 @@ const { pageTitle } = Astro.props;
 
     <script>
       import "../scripts/menu.js"
+    </script>
+    <script is:inline>
+      (function () {
+        var lang = document.documentElement.lang || 'zh';
+        var key = lang === 'en' ? 'data-title-en' : 'data-title-zh';
+        document.querySelectorAll('a[data-title-zh]').forEach(function (a) {
+          var t = a.getAttribute(key);
+          if (t) a.setAttribute('title', t);
+        });
+        document.querySelectorAll('[data-aria-label-zh]').forEach(function (el) {
+          var k = lang === 'en' ? 'data-aria-label-en' : 'data-aria-label-zh';
+          var t = el.getAttribute(k);
+          if (t) el.setAttribute('aria-label', t);
+        });
+      })();
     </script>
   </body>
 </html>

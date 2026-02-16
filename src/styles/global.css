@@ -11,12 +11,7 @@
   box-sizing: border-box;
 }
 
-*:not(html, body) {
-  transition: background-color var(--transition-base), 
-              color var(--transition-base), 
-              transform var(--transition-fast),
-              border-color var(--transition-base);
-}
+/* 不再为全局设置 transition，避免按钮动效时整页微小位移；仅对需要动效的组件单独设置 */
 
 html {
   background-color: var(--color-bg);
@@ -38,6 +33,7 @@ a {
   color: var(--color-link);
   text-decoration: none;
   font-weight: var(--font-weight-bold);
+  transition: color var(--transition-base), border-color var(--transition-base);
 }
 
 a:hover {
@@ -95,7 +91,7 @@ img {
   display: block;
 }
 
-/* 菜单按钮 */
+/* 菜单按钮：仅过渡颜色与边框，不触发布局变化 */
 .menu {
   border: var(--border-width-thick) solid var(--color-text);
   background-color: transparent;
@@ -105,7 +101,7 @@ img {
   font-weight: var(--font-weight-black);
   text-transform: uppercase;
   font-family: var(--font-family-base);
-  transition: all var(--transition-base);
+  transition: color var(--transition-base), border-color var(--transition-base);
 }
 
 .menu:hover {
@@ -121,4 +117,12 @@ html.dark .menu {
 html.dark .menu:hover {
   border-color: var(--color-accent);
   color: var(--color-accent);
+}
+
+/* 多语言：根据 html.lang 显示对应文案 */
+html.lang-en .lang-zh {
+  display: none !important;
+}
+html:not(.lang-en) .lang-en {
+  display: none !important;
 }

@@ -20,8 +20,8 @@ const { tag } = Astro.params;
 const { posts } = Astro.props;
 ---
 
-<BaseLayout pageTitle={tag}>
-  <p>包含「<strong>{tag}</strong>」标签的文章</p>
+<BaseLayout pageTitle={tag} pageTitleZh={tag} pageTitleEn={tag}>
+  <p><span class="lang-zh">包含「<strong>{tag}</strong>」标签的文章</span><span class="lang-en">Posts with tag «<strong>{tag}</strong>»</span></p>
   <ul style="list-style: none; padding: 0;">
     {posts.map((post: any) => (
       <BlogPost url={post.url} title={post.frontmatter.title} />

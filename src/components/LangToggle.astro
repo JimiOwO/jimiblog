@@ -1,0 +1,66 @@
+---
+---
+<button id="langToggle" class="lang-toggle" type="button" data-aria-label-zh="切换语言" data-aria-label-en="Toggle language" aria-label="切换语言">
+  <span class="lang-toggle-zh" aria-hidden="true">文</span>
+  <span class="lang-toggle-en" aria-hidden="true">A</span>
+</button>
+
+<script is:inline>
+  (function initLang() {
+    var stored = localStorage.getItem('lang');
+    var lang = (stored === 'en' || stored === 'zh') ? stored : 'zh';
+    document.documentElement.lang = lang;
+    document.documentElement.classList.toggle('lang-en', lang === 'en');
+    document.documentElement.classList.toggle('lang-zh', lang === 'zh');
+  })();
+
+  document.getElementById('langToggle')?.addEventListener('click', function () {
+    var html = document.documentElement;
+    var next = html.lang === 'zh' ? 'en' : 'zh';
+    html.lang = next;
+    html.classList.toggle('lang-en', next === 'en');
+    html.classList.toggle('lang-zh', next === 'zh');
+    localStorage.setItem('lang', next);
+    var title = html.getAttribute(next === 'en' ? 'data-page-title-en' : 'data-page-title-zh');
+    if (title) document.title = title + ' | Pengui.dev';
+    document.querySelectorAll('a[data-title-zh]').forEach(function (a) {
+      var t = a.getAttribute(next === 'en' ? 'data-title-en' : 'data-title-zh');
+      if (t) a.setAttribute('title', t);
+    });
+    document.querySelectorAll('[data-aria-label-zh]').forEach(function (el) {
+      var t = el.getAttribute(next === 'en' ? 'data-aria-label-en' : 'data-aria-label-zh');
+      if (t) el.setAttribute('aria-label', t);
+    });
+  });
+</script>
+
+<style>
+  .lang-toggle {
+    border: 0;
+    background: none;
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+  }
+
+  .lang-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  .lang-toggle-zh,
+  .lang-toggle-en {
+    display: none;
+  }
+
+  html:not(.lang-en) .lang-toggle-zh,
+  html.lang-en .lang-toggle-en {
+    display: inline;
+  }
+</style>

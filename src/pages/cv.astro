@@ -1,19 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 const pageTitle = "简历";
+
+const pdfUrl = '/CV.pdf';
 ---
 
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle} pageTitleZh="简历" pageTitleEn="CV">
   <div class="cv-container">
-    <div class="cv-download">
-      <a href="/CV.pdf" target="_blank" class="btn btn-primary" download="Jianye Jimi Peng_CV.pdf">
-        下载 PDF
-      </a>
-    </div>
-    
-    <div class="cv-preview" id="pdf-container">
-      <div class="cv-loading">正在加载简历...</div>
-    </div>
+    <a
+      href={pdfUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="cv-preview-link"
+      data-title-zh="点击打开 PDF"
+      data-title-en="Click to open PDF"
+      title="点击打开 PDF"
+    >
+      <div class="cv-preview" id="pdf-container" data-pdf-url={pdfUrl}>
+        <div class="cv-loading"><span class="lang-zh">正在加载简历…</span><span class="lang-en">Loading CV…</span></div>
+      </div>
+      <span class="cv-preview-hint"><span class="lang-zh">点击预览打开 PDF</span><span class="lang-en">Click preview to open PDF</span></span>
+    </a>
   </div>
 </BaseLayout>
 
@@ -23,54 +30,45 @@ const pageTitle = "简历";
     const container = document.getElementById('pdf-container');
     if (!container) return;
 
-    // 等待 PDF.js 加载完成
-    // @ts-ignore - PDF.js 在全局作用域
     if (typeof pdfjsLib === 'undefined') {
       setTimeout(renderPDF, 100);
       return;
     }
 
-    // 设置 worker
-    // @ts-ignore - PDF.js 在全局作用域
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
+    const pdfUrl = container.dataset.pdfUrl || '/CV.pdf';
+    (window as any).__pdfUrl = pdfUrl;
+
     try {
-      // 加载 PDF
-      // @ts-ignore - PDF.js 在全局作用域
-      const loadingTask = pdfjsLib.getDocument('/CV.pdf');
+      const loadingTask = pdfjsLib.getDocument(pdfUrl);
       const pdf = await loadingTask.promise;
-      
-      // 清除加载提示
+
       container.innerHTML = '';
-      
-      // 渲染所有页面
+
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
         const viewport = page.getViewport({ scale: 1.5 });
-        
-        // 创建 canvas
+
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
         canvas.className = 'cv-page';
-        
-        // 渲染页面
-        const renderContext = {
+
+        await page.render({
           canvasContext: context,
           viewport: viewport
-        };
-        
-        await page.render(renderContext).promise;
+        }).promise;
         container.appendChild(canvas);
       }
     } catch (error) {
       console.error('PDF 加载失败:', error);
-      container.innerHTML = '<div class="cv-error">无法加载简历，请<a href="/CV.pdf.pdf" download="Jianye Jimi Peng_CV.pdf">点击下载</a>查看。</div>';
+      const openPdf = (window as any).__pdfUrl || pdfUrl;
+      container.innerHTML = '<div class="cv-error"><span class="lang-zh">无法加载预览，<a href="' + openPdf + '" target="_blank" rel="noopener noreferrer">点击此处打开 PDF</a></span><span class="lang-en">Preview failed. <a href="' + openPdf + '" target="_blank" rel="noopener noreferrer">Click here to open PDF</a></span></div>';
     }
   }
 
-  // 页面加载完成后渲染 PDF
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', renderPDF);
   } else {
@@ -80,31 +78,47 @@ const pageTitle = "简历";
 
 <style>
   .cv-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-lg);
     margin: var(--spacing-xl) 0;
+  }
+
+  .cv-preview-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: var(--border-radius-sm);
+    transition: box-shadow var(--transition-base);
+    outline-offset: 4px;
+  }
+
+  .cv-preview-link:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .cv-preview-link:focus-visible {
+    outline: 2px solid var(--color-primary);
   }
 
   .cv-preview {
     width: 100%;
-    max-width: 800px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
     background: var(--color-bg);
+    border-radius: var(--border-radius-sm);
   }
 
   .cv-page {
     width: 100%;
     height: auto;
     display: block;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-md);
     margin-bottom: var(--spacing-md);
     background: var(--color-white);
+    pointer-events: none;
   }
 
   .cv-loading,
@@ -114,18 +128,22 @@ const pageTitle = "简历";
     color: var(--color-text-secondary);
   }
 
-  .cv-error a {
+  .cv-error span {
     color: var(--color-link);
+    font-weight: var(--font-weight-bold);
     text-decoration: underline;
   }
 
-  .cv-download {
-    margin-bottom: var(--spacing-md);
+  .cv-preview-hint {
+    display: block;
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-top: var(--spacing-md);
   }
 
   @media screen and (max-width: 900px) {
     .cv-preview {
-      max-width: 100%;
       padding: var(--spacing-md);
     }
   }

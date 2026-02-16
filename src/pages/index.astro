@@ -1,36 +1,98 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Greeting from '../components/Greeting';
 const pageTitle = "首页";
+
 ---
 
-<BaseLayout pageTitle={pageTitle}>
-  <Greeting client:load messages={["Hej", "Hello", "你好", "どうも"]} />
+<BaseLayout pageTitle={pageTitle} pageTitleZh="首页" pageTitleEn="Home">
+  <section class="landing">
+    <h1 class="landing-title" id="landing-greeting">
+      <span class="landing-word"></span>
+      <span class="landing-cursor">|</span>
+    </h1>
+  </section>
+
+  <script>
+    (function () {
+      const words = ['你好！我是Jimi。', 'Hello! I\'m Jimi.', '初めまして！Jimiです。', 'Hej! Jag är Jimi.'];
+      const wordEl = document.querySelector('.landing-word');
+      const cursorEl = document.querySelector('.landing-cursor');
+      if (!wordEl || !cursorEl) return;
+
+      const typeDelay = 100;
+      const deleteDelay = 20;
+      const pauseAfterType = 1500;
+      const pauseAfterDelete = 100;
+
+      let wordIndex = Math.floor(Math.random() * words.length);
+      let isDeleting = false;
+
+      function nextRandomIndex() {
+        if (words.length <= 1) return 0;
+        var i = Math.floor(Math.random() * words.length);
+        return i === wordIndex ? (wordIndex + 1) % words.length : i;
+      }
+
+      function tick() {
+        const word = words[wordIndex];
+        const current = wordEl.textContent;
+
+        if (!isDeleting) {
+          if (current.length < word.length) {
+            wordEl.textContent = word.slice(0, current.length + 1);
+            setTimeout(tick, typeDelay);
+          } else {
+            isDeleting = true;
+            setTimeout(tick, pauseAfterType);
+          }
+        } else {
+          if (current.length > 0) {
+            wordEl.textContent = current.slice(0, -1);
+            setTimeout(tick, deleteDelay);
+          } else {
+            isDeleting = false;
+            wordIndex = nextRandomIndex();
+            setTimeout(tick, pauseAfterDelete);
+          }
+        }
+      }
+
+      setTimeout(tick, 400);
+    })();
+  </script>
 </BaseLayout>
 
 <style>
-  .greeting {
-    text-align: center;
-    padding: var(--spacing-3xl) 0;
+  .landing {
+    min-height: calc(100vh - 12rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-3xl) var(--spacing-lg);
   }
 
-  .greeting-text {
-    font-size: var(--font-size-4xl);
+  .landing-title {
+    margin: 0;
+    font-size: clamp(2.5rem, 10vw, var(--font-size-4xl));
     font-weight: var(--font-weight-black);
     color: var(--color-text);
-    margin: 0;
-    border: none;
-    padding: 0;
     text-transform: none;
     letter-spacing: var(--letter-spacing-normal);
+    border: none;
+    padding: 0;
+    line-height: 1.2;
   }
 
-  .greeting-cursor {
-    animation: blink 1s infinite;
+  .landing-word {
+    display: inline-block;
+  }
+
+  .landing-cursor {
     color: var(--color-primary);
+    animation: cursor-blink 1s step-end infinite;
   }
 
-  @keyframes blink {
+  @keyframes cursor-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
