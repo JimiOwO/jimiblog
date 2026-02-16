@@ -6,7 +6,7 @@ const pageTitle = "简历";
 <BaseLayout pageTitle={pageTitle}>
   <div class="cv-container">
     <div class="cv-download">
-      <a href="/CV.pdf.pdf" target="_blank" class="btn btn-primary" download="Jianye Jimi Peng_CV.pdf">
+      <a href="/CV.pdf" target="_blank" class="btn btn-primary" download="Jianye Jimi Peng_CV.pdf">
         下载 PDF
       </a>
     </div>
@@ -37,7 +37,7 @@ const pageTitle = "简历";
     try {
       // 加载 PDF
       // @ts-ignore - PDF.js 在全局作用域
-      const loadingTask = pdfjsLib.getDocument('/CV.pdf.pdf');
+      const loadingTask = pdfjsLib.getDocument('/CV.pdf');
       const pdf = await loadingTask.promise;
       
       // 清除加载提示
