@@ -4,7 +4,7 @@ const pageTitle = "首页";
 
 ---
 
-<BaseLayout pageTitle={pageTitle} pageTitleZh="首页" pageTitleEn="Home">
+<BaseLayout pageTitle={pageTitle} pageTitleZh="首页" pageTitleEn="Home" fullHeightLayout>
   <section class="landing">
     <h1 class="landing-title" id="landing-greeting">
       <span class="landing-word"></span>
@@ -63,6 +63,16 @@ const pageTitle = "首页";
 </BaseLayout>
 
 <style>
+  /* 首页一屏布局：由 body.layout-landing 的 flex 控制，此处仅保证 landing 填满主内容区 */
+  body.layout-landing .landing {
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg) var(--spacing-lg);
+  }
+
   .landing {
     min-height: calc(100vh - 12rem);
     display: flex;
