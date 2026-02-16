@@ -1,28 +1,76 @@
 ---
 import Header from '../components/Header.astro';
-import '../styles/global.css';
 import Footer from '../components/Footer.astro';
-const {pageTitle} = Astro.props;
+import '../styles/global.css';
 
+const { pageTitle } = Astro.props;
 ---
 
 <html lang="zh">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{pageTitle}</title>
-	</head>
-	<body>
-		<Header />
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle} | Pengui.dev</title>
+  </head>
+  <body>
+    <div class="top-line"></div>
+
+    <Header />
+
+    <main class="main-content">
+      <div class="page-header">
         <h1>{pageTitle}</h1>
+        <div class="accent-dot"></div>
+      </div>
 
-        <slot />
+      <slot />
+    </main>
 
-		<Footer />
-		<script>
-			import "../scripts/menu.js"
-		</script>
-	</body>
+    <Footer />
+
+    <script>
+      import "../scripts/menu.js"
+    </script>
+
+    <style>
+      /* 顶部贯穿红线条 */
+      .top-line {
+        height: 6px;
+        background-color: var(--famicom-red);
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 100;
+      }
+
+      /* 内容区的淡入动画 */
+      .main-content {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .page-header {
+        position: relative;
+        margin-bottom: 2rem;
+      }
+
+      /* 标题旁的小装饰，增加设计感 */
+      .accent-dot {
+        width: 12px;
+        height: 12px;
+        background-color: var(--famicom-red);
+        margin-top: -0.5rem;
+      }
+
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+  </body>
 </html>

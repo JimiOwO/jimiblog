@@ -1,37 +1,68 @@
+/* 变量定义：方便以后一键换色 */
+:root {
+  --kth-blue: #004791;       /* KTH 官方蓝 */
+  --kth-navy: #001f3f;       /* 更深邃的深蓝色 */
+  --accent-gold: #e3a21a;    /* 瑞典金/强调色 */
+  --light-bg: #f8f9fa;       /* 浅色模式背景 */
+  --dark-bg: #050a18;        /* 深色模式背景 */
+  --text-main: #2d3436;
+  --text-light: #ffffff;
+}
+
+/* 基础设置 */
+* {
+  box-sizing: border-box;
+  transition: background-color 0.5s ease, color 0.5s ease; /* 让切换深色模式更丝滑 */
+}
+
 html {
-  background-color: #eeeeee;
-  font-family: sans-serif;
+  background-color: var(--light-bg);
+  font-family: 'Inter', -apple-system, sans-serif; /* 使用更现代的字体族 */
+  color: var(--text-main);
 }
 
 body {
   margin: 0 auto;
   width: 100%;
-  max-width: 120ch;
-  padding: 1rem;
-  line-height: 1.5;
+  max-width: 900px; /* 稍微缩小宽度，长文本阅读更舒适 */
+  padding: 2rem;
+  line-height: 1.6;
 }
 
-* {
-  box-sizing: border-box;
+/* 深色模式调整 */
+html.dark {
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+}
+
+/* 链接样式 */
+a {
+  color: var(--kth-blue);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.dark a {
+  color: #64b5f6; /* 深色模式下调亮蓝色 */
 }
 
 h1 {
-  margin: 1rem 0;
-  font-size: 2.5rem;
+  margin: 2rem 0;
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--kth-blue);
 }
 
-/* Menu styles */
-.menu {
-  border: none;
-  color: #000000;
-  font-size: 1.2rem;
-  font-weight: bold;
-  padding: 5px 10px;
+.dark h1 {
+  color: var(--text-light);
 }
 
-
-/* Navigation styles */
-
+/* 导航栏样式优化 */
 .nav-links {
   width: 100%;
   display: none;
@@ -41,39 +72,61 @@ h1 {
 .nav-links a {
   display: block;
   text-align: center;
-  padding: 10px 0;
+  padding: 12px 0;
   text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 600;
   text-transform: uppercase;
-  color: #000000;
+  color: var(--text-main);
+  letter-spacing: 0.05em;
 }
 
+.dark .nav-links a {
+  color: var(--text-light);
+}
+
+/* 悬停效果：不再是突兀的背景色，而是优雅的下划线或颜色变化 */
 .nav-links a:hover,
 .nav-links a:focus {
-  background-color: #eb5a006b;
+  color: var(--kth-blue);
+  background-color: rgba(0, 71, 145, 0.05);
 }
 
-:has(.menu[aria-expanded="true"]) .nav-links {
-  display: unset;
+.dark .nav-links a:hover {
+  color: var(--accent-gold);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
+/* 响应式调整 */
 @media screen and (min-width: 636px) {
   .nav-links {
-    margin-left: 5em;
-    display: block;
-    position: static;
-    width: auto;
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
     background: none;
   }
 
   .nav-links a {
     display: inline-block;
-    padding: 15px 20px;
+    padding: 10px 15px;
+    border-radius: 6px;
   }
 
-    .menu {
+  .menu {
     display: none;
   }
+}
 
+/* 汉堡菜单按钮样式（移动端） */
+.menu {
+  border: 1px solid #ddd;
+  background-color: transparent;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dark .menu {
+  border-color: #444;
+  color: #fff;
 }
