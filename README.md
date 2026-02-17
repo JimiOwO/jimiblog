@@ -37,8 +37,9 @@ npm install
 npm run dev
 /The development server will be available at http://localhost:4321/.
 
-Deployment
+#Deployment
 Continuous Deployment (CD) is configured via GitHub Actions. Any push to the main branch automatically triggers a build and deploys the updated static files to GitHub Pages.
+```
 
-License
-Licensed under the MIT License. You are free to use this project as a reference with proper attribution.
+##This project is licensed under the **MIT License**. 
+Feel free to fork, tweak, or use it as a reference.
