@@ -90,6 +90,15 @@ const { frontmatter } = Astro.props;
 
   .post-content :global(h2) {
     margin-top: var(--spacing-2xl);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-xs);
+    border-bottom: var(--border-width-thin) solid var(--color-border-light);
+  }
+
+  .post-content :global(p) {
+    margin-top: 0;
+    margin-bottom: var(--spacing-lg);
+    line-height: var(--line-height-relaxed);
   }
 
   .post-content :global(h3) {
