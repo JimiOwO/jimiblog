@@ -1,17 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BlogPost from '../components/BlogPost.astro';
+import { type PostEntry, sortPostsByDate } from '../utils/posts';
 
-interface PostModule {
-  url: string;
-  frontmatter: { title: string; tags: string[]; pubDate?: Date | string };
-}
-const allPosts = (Object.values(import.meta.glob<PostModule>('./posts/*.md', { eager: true })) as PostModule[])
-  .sort((a, b) => {
-    const dateA = a.frontmatter.pubDate ? new Date(a.frontmatter.pubDate).getTime() : 0;
-    const dateB = b.frontmatter.pubDate ? new Date(b.frontmatter.pubDate).getTime() : 0;
-    return dateB - dateA; // 新 → 旧
-  });
+const allPosts = sortPostsByDate(
+  Object.values(import.meta.glob<PostEntry>('./posts/*.md', { eager: true })) as PostEntry[]
+);
 const allTags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())].sort();
 const pageTitle = "博客";
 ---

@@ -1,23 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogPost from '../../components/BlogPost.astro';
-
-interface PostItem {
-  url: string;
-  frontmatter: { title: string; tags: string[]; pubDate?: Date | string };
-}
-
-function sortPostsByDate<T extends PostItem>(posts: T[]): T[] {
-  return [...posts].sort((a, b) => {
-    const dateA = a.frontmatter.pubDate ? new Date(a.frontmatter.pubDate).getTime() : 0;
-    const dateB = b.frontmatter.pubDate ? new Date(b.frontmatter.pubDate).getTime() : 0;
-    return dateB - dateA; // 新 → 旧
-  });
-}
+import { type PostEntry, sortPostsByDate } from '../../utils/posts';
 
 export function getStaticPaths() {
-  const globModules = import.meta.glob<PostItem>('../posts/*.md', { eager: true });
-  const allPosts: PostItem[] = Object.values(globModules) as PostItem[];
+  const globModules = import.meta.glob<PostEntry>('../posts/*.md', { eager: true });
+  const allPosts: PostEntry[] = Object.values(globModules) as PostEntry[];
   const uniqueTags: string[] = [...new Set(allPosts.map((p) => p.frontmatter.tags).flat())];
 
   return uniqueTags.map((tag: string) => {
@@ -33,8 +21,13 @@ const { posts } = Astro.props;
 <BaseLayout pageTitle={tag} pageTitleZh={tag} pageTitleEn={tag}>
   <p><span class="lang-zh">包含「<strong>{tag}</strong>」标签的文章</span><span class="lang-en">Posts with tag «<strong>{tag}</strong>»</span></p>
   <ul style="list-style: none; padding: 0;">
-    {posts.map((post: PostItem) => (
-      <BlogPost url={post.url} title={post.frontmatter.title} />
+    {posts.map((post) => (
+      <BlogPost
+        url={post.url}
+        title={post.frontmatter.title}
+        tags={post.frontmatter.tags}
+        pubDate={post.frontmatter.pubDate}
+      />
     ))}
   </ul>
 </BaseLayout>

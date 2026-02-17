@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-type PostWithTags = { frontmatter: { tags: string[] } };
-const allPosts = Object.values(import.meta.glob<PostWithTags>('../posts/*.md', { eager: true })) as PostWithTags[];
-const tags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())];
+import { type PostEntry } from '../../utils/posts';
+
+const allPosts = Object.values(import.meta.glob<PostEntry>('../posts/*.md', { eager: true })) as PostEntry[];
+const tags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())].sort();
 const pageTitle = "标签索引";
 ---
 

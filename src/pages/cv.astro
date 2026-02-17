@@ -19,7 +19,6 @@ const pdfUrl = '/CV.pdf';
       <div class="cv-preview" id="pdf-container" data-pdf-url={pdfUrl}>
         <div class="cv-loading"><span class="lang-zh">正在加载简历…</span><span class="lang-en">Loading CV…</span></div>
       </div>
-      <span class="cv-preview-hint"><span class="lang-zh">点击预览打开 PDF</span><span class="lang-en">Click preview to open PDF</span></span>
     </a>
   </div>
 </BaseLayout>
@@ -132,14 +131,6 @@ const pdfUrl = '/CV.pdf';
     color: var(--color-link);
     font-weight: var(--font-weight-bold);
     text-decoration: underline;
-  }
-
-  .cv-preview-hint {
-    display: block;
-    text-align: center;
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-    margin-top: var(--spacing-md);
   }
 
   @media screen and (max-width: 900px) {
