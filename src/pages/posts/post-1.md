@@ -1,9 +1,9 @@
 ---
 layout: ../../layouts/MarkdownPostLayout.astro
-title: 电子竞技是个错误。
+title: Tips for learning a new language.
 description: "剣は心なり"
 pubDate: 2025-12-30
-tags: ["日本語"]
+tags: [English"]
 ---
 
 I am proud of being a bilingual person. I have been learning Enlgish for more than 10 years and Chinese for my entire life. Now I am learning Japanese and Swedish at the same time as a hobby and a form of self-improvement. "Crazy!" you might think, but I honestly think learning new languages can be fun and easier than you would think. Here are some of my thoughts and tips. You could argue, but here it goes.
@@ -35,4 +35,4 @@ Imerse yourself in a foreign language sounds intimidating, but I found this to b
 When I learn Japanese, I quickly realized what advantage（優勢）I am at. Being native in Chinese make Kanji-reading nearly non-pain at all. 
 
 9.##Confidence##
-This is the most important.Confidence lowers psychological resistance.Psychological resistance slows output. Therefore, confidence accelerates learning.
+This is the most important.Confidence lowers psychological resistance.Psychological resistance slows output. Therefore, confidence accelerates learning.d
