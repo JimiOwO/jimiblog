@@ -2,17 +2,27 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogPost from '../../components/BlogPost.astro';
 
-export async function getStaticPaths() {
-  const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
+interface PostItem {
+  url: string;
+  frontmatter: { title: string; tags: string[]; pubDate?: Date | string };
+}
 
-  const uniqueTags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).flat())];
+function sortPostsByDate<T extends PostItem>(posts: T[]): T[] {
+  return [...posts].sort((a, b) => {
+    const dateA = a.frontmatter.pubDate ? new Date(a.frontmatter.pubDate).getTime() : 0;
+    const dateB = b.frontmatter.pubDate ? new Date(b.frontmatter.pubDate).getTime() : 0;
+    return dateB - dateA; // 新 → 旧
+  });
+}
 
-  return uniqueTags.map((tag) => {
-    const filteredPosts = allPosts.filter((post: any) => post.frontmatter.tags.includes(tag));
-    return {
-      params: { tag },
-      props: { posts: filteredPosts },
-    };
+export function getStaticPaths() {
+  const globModules = import.meta.glob<PostItem>('../posts/*.md', { eager: true });
+  const allPosts: PostItem[] = Object.values(globModules) as PostItem[];
+  const uniqueTags: string[] = [...new Set(allPosts.map((p) => p.frontmatter.tags).flat())];
+
+  return uniqueTags.map((tag: string) => {
+    const filteredPosts = allPosts.filter((p) => p.frontmatter.tags.includes(tag));
+    return { params: { tag }, props: { posts: sortPostsByDate(filteredPosts) } };
   });
 }
 
@@ -23,7 +33,7 @@ const { posts } = Astro.props;
 <BaseLayout pageTitle={tag} pageTitleZh={tag} pageTitleEn={tag}>
   <p><span class="lang-zh">包含「<strong>{tag}</strong>」标签的文章</span><span class="lang-en">Posts with tag «<strong>{tag}</strong>»</span></p>
   <ul style="list-style: none; padding: 0;">
-    {posts.map((post: any) => (
+    {posts.map((post: PostItem) => (
       <BlogPost url={post.url} title={post.frontmatter.title} />
     ))}
   </ul>

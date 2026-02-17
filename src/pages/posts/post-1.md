@@ -1,24 +1,38 @@
 ---
 layout: ../../layouts/MarkdownPostLayout.astro
-title: '我的第一篇博客文章'
-pubDate: 2022-07-01
-description: '这是我 Astro 博客的第一篇文章。'
-author: 'Jimi'
-tags: ["中文"]
+title: 电子竞技是个错误。
+description: "剣は心なり"
+pubDate: 2025-12-30
+tags: ["日本語"]
 ---
 
- 发表于：2022-07-01
+I am proud of being a bilingual person. I have been learning Enlgish for more than 10 years and Chinese for my entire life. Now I am learning Japanese and Swedish at the same time as a hobby and a form of self-improvement. "Crazy!" you might think, but I honestly think learning new languages can be fun and easier than you would think. Here are some of my thoughts and tips. You could argue, but here it goes.
 
- 欢迎来到我学习关于 Astro 的新博客！在这里，我将分享我建立新网站的学习历程。
-![](/images/sea.jpg)
- ## 我做了什么
+1.##Set Milestones##
+Human are generally, lazy. Setting a milestone, like signing up for an exam(JLPT,HSK,TOEFL,etc.) would benefit and push you forward. Think of it as a deadline for yourself. But also you want to be realitic on your goal, or you will end up crying after failing. But for beginners, I would suggest you to set a milestone after you decided to learn a certain language, it provides an ergencies and later-on confidence.
 
- 1. **安装 Astro**：首先，我创建了一个新的 Astro 项目并设置好了我的在线账号。
+2.##LLM and self-learning##
+Yes, AI bad, taking jobs, polluting environment, pirating copyrights... you name it. Thinking on the good side, talking to LLM is a great way for a beginner to practice output of a language. LLM won't judge you, laugh at you, or get tired of you making the same mistakes over and over. It also answers your question promtly, and for me at least, is less problem-prone than a human. Don't take it wrong, you still have to have human to human communications throughout learning a new language, but AI is definitely a powerful tool as you set off.
 
- 2. **制作页面**：然后我学习了如何通过创建新的 `.astro` 文件并将它们保存在 `src/pages/` 文件夹里来制作页面。
+3.##Vocabs##
+I don't really memorize vocabulary—at least not from a textbook. I might look at a word, take a moment to write it down, and then just move on. Later, when I encounter that word again, my memory is reinforced whether I recognized it immediately or not.
+What if I never see that word again? Well, that means it probably wasn't that important anyway. Why would you spend your brainpower to internalize a word that is used only twice a year?
 
- 3. **发表博客文章**：这是我的第一篇博客文章！我现在有用 Astro 编写的页面和用 Markdown 写的文章了！
+4.##accent is secondary to clearity##
+"Oh, I’m so ashamed that I have an accent!"
 
- ## 下一步计划
+Just don't. Always speak out. Speaking a second language with zero accent is often just a dream. I’ve met and become friends with many ABCs (American-born Chinese) and long-term immigrants; respectfully, they often have a strong accent when they speak Mandarin, too.
 
- 我将完成 Astro 教程，然后继续编写更多内容。关注我以获取更多信息。
+So, my suggestion? Forget about the accent. The only person who will shame you for your accent is yourself (and possibly toxic pricks who only speak one language and are still bad at it). Your top priority is to make yourself understandable and presentable.
+
+5.##Output##
+Namely, Speak and Write. To speak, try self-talk, shadow reading (which is a form of speaking), and online language exchanges. To write, try journaling or taking notes in your target language. Output is the most important part of mastering a language. At this very moment, I am practicing what I preach by outputting in English. I assure you: the more you write and speak, the more comfortable you will feel, the more you will improve.
+
+6.##Imersion##
+Imerse yourself in a foreign language sounds intimidating, but I found this to be the fastest way. 
+
+8.##Make use of the language you know##
+When I learn Japanese, I quickly realized what advantage（優勢）I am at. Being native in Chinese make Kanji-reading nearly non-pain at all. 
+
+9.##Confidence##
+This is the most important.Confidence lowers psychological resistance.Psychological resistance slows output. Therefore, confidence accelerates learning.

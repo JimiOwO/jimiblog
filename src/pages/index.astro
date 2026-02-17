@@ -2,15 +2,99 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 const pageTitle = "首页";
 
+const personalInfo = {
+  name: "Jianye \"Jimi\" Peng",
+  titleZh: "学生",
+  titleEn: "Student",
+  location: "USA",
+  email: "jimipengowo@gmail.com",
+  bioZh: "热爱技术、创意与创新的学生。",
+  bioEn: "Passionate student exploring the intersection of technology, creativity, and innovation."
+};
+
+const skills = {
+  technical: ["Web Development", "Programming", "Problem Solving"],
+  creative: ["Photography", "Design", "Creative Writing"],
+  languages: ["English", "Chinese", "Japanese"]
+};
+
+const interests = ["Film", "Games", "Music", "Technology", "Art"];
 ---
 
-<BaseLayout pageTitle={pageTitle} pageTitleZh="首页" pageTitleEn="Home" fullHeightLayout>
+<BaseLayout pageTitle={pageTitle} pageTitleZh="首页" pageTitleEn="Home">
   <section class="landing">
     <h1 class="landing-title" id="landing-greeting">
       <span class="landing-word"></span>
       <span class="landing-cursor">|</span>
     </h1>
   </section>
+
+  <div class="about-container" id="about">
+    <!-- 简介部分 -->
+    <section class="about-section">
+      <div class="about-intro">
+        <h2 class="about-name">{personalInfo.name}</h2>
+        <p class="about-title"><span class="lang-zh">{personalInfo.titleZh}</span><span class="lang-en">{personalInfo.titleEn}</span></p>
+        <p class="about-bio"><span class="lang-zh">{personalInfo.bioZh}</span><span class="lang-en">{personalInfo.bioEn}</span></p>
+      </div>
+    </section>
+
+    <!-- 联系信息 -->
+    <section class="about-section">
+      <h2 class="section-title"><span class="lang-zh">联系</span><span class="lang-en">Contact</span></h2>
+      <div class="contact-info">
+        <div class="contact-item">
+          <span class="contact-label"><span class="lang-zh">位置</span><span class="lang-en">Location</span></span>
+          <span class="contact-value">{personalInfo.location}</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label"><span class="lang-zh">邮箱</span><span class="lang-en">Email</span></span>
+          <a href={`mailto:${personalInfo.email}`} class="contact-value">{personalInfo.email}</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 技能 -->
+    <section class="about-section">
+      <h2 class="section-title"><span class="lang-zh">技能</span><span class="lang-en">Skills</span></h2>
+      <div class="skills-grid">
+        <div class="skill-category">
+          <h3 class="skill-category-title"><span class="lang-zh">技术技能</span><span class="lang-en">Technical</span></h3>
+          <div class="tags-container">
+            {skills.technical.map((skill) => (
+              <span class="tag">{skill}</span>
+            ))}
+          </div>
+        </div>
+        <div class="skill-category">
+          <h3 class="skill-category-title"><span class="lang-zh">创意技能</span><span class="lang-en">Creative</span></h3>
+          <div class="tags-container">
+            {skills.creative.map((skill) => (
+              <span class="tag">{skill}</span>
+            ))}
+          </div>
+        </div>
+        <div class="skill-category">
+          <h3 class="skill-category-title"><span class="lang-zh">语言</span><span class="lang-en">Languages</span></h3>
+          <div class="tags-container">
+            {skills.languages.map((lang) => (
+              <span class="tag">{lang}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 兴趣 -->
+    <section class="about-section">
+      <h2 class="section-title"><span class="lang-zh">兴趣</span><span class="lang-en">Interests</span></h2>
+      <div class="tags-container">
+        {interests.map((interest) => (
+          <span class="tag tag-interest">{interest}</span>
+        ))}
+      </div>
+    </section>
+  </div>
 
   <script>
     (function () {
@@ -63,16 +147,6 @@ const pageTitle = "首页";
 </BaseLayout>
 
 <style>
-  /* 首页一屏布局：由 body.layout-landing 的 flex 控制，此处仅保证 landing 填满主内容区 */
-  body.layout-landing .landing {
-    min-height: 0;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing-lg) var(--spacing-lg);
-  }
-
   .landing {
     min-height: calc(100vh - 12rem);
     display: flex;
@@ -105,5 +179,148 @@ const pageTitle = "首页";
   @keyframes cursor-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
+  }
+
+  /* 关于区块（与首页合并） */
+  .about-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .about-section {
+    margin-bottom: var(--spacing-2xl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: var(--border-width-thin) solid var(--color-border-light);
+  }
+
+  .about-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .about-intro {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .about-name {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-text);
+    margin: 0 0 var(--spacing-sm) 0;
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  .about-title {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--spacing-md) 0;
+    font-weight: var(--font-weight-medium);
+  }
+
+  .about-bio {
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    line-height: var(--line-height-relaxed);
+    margin: 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .section-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0 0 var(--spacing-lg) 0;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: var(--border-width-medium) solid var(--color-primary);
+    display: inline-block;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-md);
+  }
+
+  .contact-label {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    min-width: 80px;
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  .contact-value {
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+  }
+
+  .contact-value a {
+    color: var(--color-link);
+    text-decoration: none;
+    transition: color var(--transition-base);
+  }
+
+  .contact-value a:hover {
+    color: var(--color-link-hover);
+    border-bottom: var(--border-width-medium) solid var(--color-link);
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+  }
+
+  .skill-category {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .skill-category-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .tag-interest {
+    background-color: var(--color-bg-secondary);
+  }
+
+  @media screen and (max-width: 768px) {
+    .about-name {
+      font-size: var(--font-size-2xl);
+    }
+
+    .about-title {
+      font-size: var(--font-size-base);
+    }
+
+    .skills-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
+    }
+
+    .contact-item {
+      flex-direction: column;
+      gap: var(--spacing-xs);
+    }
+
+    .contact-label {
+      min-width: auto;
+    }
   }
 </style>

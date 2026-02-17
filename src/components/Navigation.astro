@@ -1,11 +1,6 @@
 ---
+import { navItems } from '../config/nav';
 const { currentPath = '/' } = Astro.props;
-const navItems = [
-  { href: '/', labelZh: '首页', labelEn: 'Home' },
-  { href: '/about', labelZh: '关于', labelEn: 'About' },
-  { href: '/cv', labelZh: '简历', labelEn: 'CV' },
-  { href: '/blog', labelZh: '博客', labelEn: 'Blog' },
-];
 ---
 
 <div id="main-menu" class="nav-links">

@@ -2,7 +2,7 @@
 layout: ../../layouts/MarkdownPostLayout.astro
 title: 剣道は心なり。
 description: "剣は心なり"
-pubDate: 2025-12-30
+pubDate: 2026-2-15
 tags: ["日本語"]
 ---
 ![CollegeKendo](/images/kendo-practice.jpg)
