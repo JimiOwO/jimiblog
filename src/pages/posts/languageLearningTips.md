@@ -32,17 +32,17 @@ So, my suggestion? Forget about the accent. The only person who will shame you f
 
 Namely: Speaking and Writing. Try self-talk, shadowing, online language exchanges, journaling or taking notes in your target language. At this very moment, I am practicing what I preach by writing this in English. It follows a simple rule: the more you do, the better you'll get, the faster you'll grow.
 
-## 7. Leverage the Old Languages
+## 6. Leverage the Old Languages
 
 The first glance on Japanese, I realized what an advantage I had - Being a native Chinese speaker makes reading Kanji nearly painless(pronunciation, however, is a different story); hiragana and katakana are easier for me too, compared to many Western learners. With this advantage, I could focus more on grammar and sentences rather than struggling with characters themselves.
 
 Swedish, on the other hand, is not so similiar to my mother tongue, so I learned it with English. Many words are comically similar with its English counterparts and sometimes I found it amusing(schack=chess, kock=cook), and helped me remember them better.
 
-## 8. Immersion
+## 7. Immersion
 
 Immersing yourself in a foreign language sounds intimidating. I think a huge part of immersion is finding that strong urge to express emotions or defend an opinion in your target language. That raw, real, personal experience strikes ten times harder than any textbook nonsense. Personally, I've found that trash-talking in games, dating a foreigner, and taking classes in a foreign language boosted my progress like nothing else.
 
-## 9. Courage
+## 8. Courage
 
 This is the most important factor.
 
