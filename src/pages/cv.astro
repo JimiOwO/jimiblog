@@ -7,15 +7,7 @@ const pdfUrl = '/CV.pdf';
 
 <BaseLayout pageTitle={pageTitle} pageTitleZh="简历" pageTitleEn="CV">
   <div class="cv-container">
-    <a
-      href={pdfUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="cv-preview-link"
-      data-title-zh="点击打开 PDF"
-      data-title-en="Click to open PDF"
-      title="点击打开 PDF"
-    >
+    <a href={pdfUrl} target="_blank" rel="noopener noreferrer" class="cv-preview-link" title="在新标签页打开 PDF">
       <div class="cv-preview" id="pdf-container" data-pdf-url={pdfUrl}>
         <div class="cv-loading"><span class="lang-zh">正在加载简历…</span><span class="lang-en">Loading CV…</span></div>
       </div>
@@ -45,15 +37,18 @@ const pdfUrl = '/CV.pdf';
 
       container.innerHTML = '';
 
+      const pixelRatio = window.devicePixelRatio || 1;
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 1.5 });
+        const viewport = page.getViewport({ scale: pixelRatio });
 
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
         canvas.className = 'cv-page';
+        canvas.style.width = (viewport.width / pixelRatio) + 'px';
+        canvas.style.height = (viewport.height / pixelRatio) + 'px';
 
         await page.render({
           canvasContext: context,
@@ -77,26 +72,14 @@ const pdfUrl = '/CV.pdf';
 
 <style>
   .cv-container {
-    margin: var(--spacing-xl) 0;
+    margin: var(--spacing-xl) auto;
   }
 
   .cv-preview-link {
     display: block;
     text-decoration: none;
     color: inherit;
-    max-width: 800px;
-    margin: 0 auto;
-    border-radius: var(--border-radius-sm);
-    transition: box-shadow var(--transition-base);
-    outline-offset: 4px;
-  }
-
-  .cv-preview-link:hover {
-    box-shadow: var(--shadow-lg);
-  }
-
-  .cv-preview-link:focus-visible {
-    outline: 2px solid var(--color-primary);
+    cursor: pointer;
   }
 
   .cv-preview {
@@ -111,8 +94,6 @@ const pdfUrl = '/CV.pdf';
   }
 
   .cv-page {
-    width: 100%;
-    height: auto;
     display: block;
     box-shadow: var(--shadow-md);
     margin-bottom: var(--spacing-md);
