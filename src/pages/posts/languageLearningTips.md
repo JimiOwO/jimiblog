@@ -12,11 +12,11 @@ Here are my two cents on language learning. Argue all you want, but here goes.
 
 ## 1. Milestones
 
-Humans are generally lazy. Setting a milestone, like signing up for an exam (JLPT, HSK, TOEFL, etc.), creates a deadline that pushes you forward. However, you need to be realistic with the goals, or you’ll end up discouraged after failing. For beginners, I suggest setting a milestone as soon as you decide to learn a language; it creates a sense of urgency and provides a massive confidence boost later on.
+Humans are natural procrastinators. Setting a milestone, like signing up for an exam (JLPT, HSK, TOEFL, etc.), creates a deadline that pushes you forward. However, you need to be realistic with the goals, or you’ll end up discouraged after failing. For beginners, I suggest setting a milestone as soon as you decide to learn a language; it creates a sense of urgency and provides a massive confidence boost later on.
 
 ## 2. LLMs
 
-Yes, AI is bad, it's taking jobs, polluting the environment, pirating copyrights—you name it. But looking on the bright side, talking to an LLM is a fantastic way for beginners to practice output. An LLM won’t judge you, laugh at you, or get tired of you making the same mistakes over and over. It answers promptly and, for me at least, is less "problem-prone" than a human tutor. Don’t get me wrong: you still need human-to-human communication to truly master a language, but AI is a powerful tool to have in your kit as you set off.
+Yes, AI is bad, it's taking jobs, polluting the environment, pirating copyrights—you name it. But looking on the bright side, talking to an LLM is a fantastic way for beginners to practice. An LLM won’t judge you, laugh at you, or get tired of you making the same mistakes over and over. It answers promptly and, for me at least, is less "problem-prone" than a human tutor. Don’t get me wrong: you still need human-to-human communication to truly master a language, but AI is a powerful tool to have in your kit as you set off.
 
 ## 3. Vocabulary
 
@@ -24,9 +24,9 @@ I am against learning vocabularies by themselves—at least not from a textbook.
 
 ## 4. Accent vs. Clarity
 
-“Oh, I feel bad about my accent!” Just don’t. Speaking a second language with zero accent is often just a dream. I’ve met and become friends with many ABCs (American-born Chinese) and long-term immigrants; they often have subtle accents when speaking Mandarin, too.
+“Oh, I feel bad about my accent!” Just don’t. Speaking a second language with zero accent is often just a dream. I’ve met and become friends with many ABCs (American-born Chinese) and long-term immigrants. Respectfully, they often have subtle accents when speaking Mandarin too. Guess what? No one minds it at all.
 
-So, my suggestion? Forget about the accent. The only person who will shame you for it is yourself (and possibly toxic pricks who only speak one language and maybe still bad at it). However, that doesn't mean you should slack on your pronunciation. Your top priority is to be understandable and presentable instead of spy-level accent.
+So, my suggestion? Forget about the accent. The only person who will shame you for it is yourself (and possibly toxic pricks who only speak one language and maybe still bad at it). However, that doesn't mean you should slack on your pronunciation. Your top priority is always to be understandable and presentable.
 
 ## 5. Output
 
@@ -46,6 +46,6 @@ Immersing yourself in a foreign language sounds intimidating. I think a huge par
 
 This is the most important factor.
 
-You’ve already taken your first baby step by reading this paragraph—that in itself is a sign of courage. The courage to act despite the flaws, to explore and experiment, to fuck around and find out, and to face challenges—these are the moments that carve your path forward.
+You’ve already taken your first baby step by reading this paragraph—that in itself is a sign of courage. The courage to act despite the flaws, to explore and experiment, to step into the unknown, and to face challenges—these are the moments where humanity truly sparkles.
 
 And as you could tell, this isn't just about learning languages—it goes way beyond that.
