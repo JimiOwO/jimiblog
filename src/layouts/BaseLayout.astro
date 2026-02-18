@@ -17,6 +17,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     <script is:inline>
       (function(){var l=localStorage.getItem('lang');var next=(l==='en')?'en':'zh';document.documentElement.lang=next;document.documentElement.classList.toggle('lang-en',next==='en');document.documentElement.classList.toggle('lang-zh',next==='zh');var t=document.documentElement.getAttribute(next==='en'?'data-page-title-en':'data-page-title-zh');if(t)document.title=t+' | Pengui.dev';})();
     </script>
+    <!-- 首屏即根据系统/本地偏好设置主题，避免闪烁 -->
+    <script is:inline>
+      (function(){
+        var saved=localStorage.getItem('theme');
+        var dark=saved==='dark'||(saved!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark',dark);
+      })();
+    </script>
   </head>
   <body class:list={[fullHeightLayout && 'layout-landing']}>
     <div class="top-line"></div>

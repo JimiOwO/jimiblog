@@ -37,18 +37,24 @@ const pdfUrl = '/CV.pdf';
 
       container.innerHTML = '';
 
-      const pixelRatio = window.devicePixelRatio || 1;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const firstPage = await pdf.getPage(1);
+      const baseViewport = firstPage.getViewport({ scale: 1 });
+      const containerWidth = container.clientWidth || document.documentElement.clientWidth || 375;
+      const scaleToFit = containerWidth / baseViewport.width;
+      const scale = Math.min(pixelRatio, scaleToFit, 2);
+
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
-        const viewport = page.getViewport({ scale: pixelRatio });
+        const viewport = page.getViewport({ scale });
 
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
         canvas.className = 'cv-page';
-        canvas.style.width = (viewport.width / pixelRatio) + 'px';
-        canvas.style.height = (viewport.height / pixelRatio) + 'px';
+        canvas.style.width = viewport.width + 'px';
+        canvas.style.height = viewport.height + 'px';
 
         await page.render({
           canvasContext: context,
@@ -73,6 +79,8 @@ const pdfUrl = '/CV.pdf';
 <style>
   .cv-container {
     margin: var(--spacing-xl) auto;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   .cv-preview-link {
@@ -80,10 +88,13 @@ const pdfUrl = '/CV.pdf';
     text-decoration: none;
     color: inherit;
     cursor: pointer;
+    max-width: 100%;
   }
 
   .cv-preview {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -91,14 +102,19 @@ const pdfUrl = '/CV.pdf';
     padding: var(--spacing-lg);
     background: var(--color-bg);
     border-radius: var(--border-radius-sm);
+    overflow-x: hidden;
   }
 
   .cv-page {
     display: block;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
     box-shadow: var(--shadow-md);
     margin-bottom: var(--spacing-md);
     background: var(--color-white);
     pointer-events: none;
+    box-sizing: border-box;
   }
 
   .cv-loading,
