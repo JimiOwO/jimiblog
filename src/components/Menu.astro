@@ -1,21 +1,54 @@
 ---
 ---
 
-<button aria-expanded="false" aria-controls="main-menu" class="menu">
-  <span class="lang-zh">菜单</span>
-  <span class="lang-en">Menu</span>
+<button type="button" aria-expanded="false" aria-controls="main-menu" class="menu" aria-label="菜单" data-aria-label-zh="菜单" data-aria-label-en="Menu">
+  <span class="menu-icon" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </span>
 </button>
 
 <style>
-  /* 默认在桌面端隐藏 */
   .menu {
     display: none;
+    border: none;
+    outline: none;
+    background: none;
+    padding: var(--spacing-sm);
+    cursor: pointer;
+    color: var(--color-text);
+    line-height: 1;
   }
 
-  /* 只在移动设备上显示 */
+  .menu:hover {
+    color: var(--color-primary);
+  }
+
+  .menu:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .menu-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu-icon svg {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
   @media screen and (max-width: 635px) {
     .menu {
-      display: block !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
     }
   }
 </style>

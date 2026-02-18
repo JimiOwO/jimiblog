@@ -1,14 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-/** 关于已合并到首页，此页仅做重定向到 /#about */
 ---
 <BaseLayout pageTitle="关于" pageTitleZh="关于" pageTitleEn="About">
   <script is:inline>
-    window.location.replace('/#about');
+    window.location.replace('/');
   </script>
   <p class="redirect-message">
     <span class="lang-zh">正在跳转到</span>
     <span class="lang-en">Redirecting to</span>
-    <a href="/#about"><span class="lang-zh">首页 · 关于</span><span class="lang-en">Home · About</span></a>
+    <a href="/"><span class="lang-zh">首页</span><span class="lang-en">Home</span></a>
   </p>
 </BaseLayout>

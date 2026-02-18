@@ -2,23 +2,14 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 const pageTitle = "首页";
 
-const personalInfo = {
-  name: "Jianye \"Jimi\" Peng",
-  titleZh: "pronoun: I/Me",
-  titleEn: "Student",
-  location: "USA",
+const contact = {
+  locationLabel: "Troy, NY",
+  locationLat: 42.72364,
+  locationLng: -73.695461,
   email: "jimipengowo@gmail.com",
-  bioZh: "热爱技术、创意与创新的学生。",
-  bioEn: "Passionate student exploring the intersection of technology, creativity, and innovation."
+  phone: "+1 518 246 0692",
+  phoneTel: "+15182460692",
 };
-
-const skills = {
-  technical: ["Web Development", "Programming", "Problem Solving"],
-  creative: ["Photography", "Design", "Creative Writing"],
-  languages: ["English", "Chinese", "Japanese"]
-};
-
-const interests = ["Film", "Games", "Music", "Technology", "Art"];
 ---
 
 <BaseLayout pageTitle={pageTitle} pageTitleZh="首页" pageTitleEn="Home">
@@ -27,74 +18,21 @@ const interests = ["Film", "Games", "Music", "Technology", "Art"];
       <span class="landing-word"></span>
       <span class="landing-cursor">|</span>
     </h1>
+    <div class="landing-contact">
+      <div class="landing-email-wrap">
+        <button type="button" class="landing-email" data-email={contact.email} title="点击复制 / Click to copy">
+          {contact.email}
+        </button>
+        <span class="landing-copy-hint" aria-live="polite" data-hint-zh="已复制" data-hint-en="Copied"></span>
+      </div>
+      <a href={`tel:${contact.phoneTel}`} class="landing-contact-line">
+        {contact.phone}
+      </a>
+      <a href={`https://earth.google.com/web/@${contact.locationLat},${contact.locationLng},500a,90d,0y,0h,0t,0r`} target="_blank" rel="noopener noreferrer" class="landing-contact-line" title="在 Google Earth 中查看 / View in Google Earth">
+        {contact.locationLabel} · {contact.locationLat.toFixed(4)}°, {contact.locationLng.toFixed(4)}°
+      </a>
+    </div>
   </section>
-
-  <div class="about-container" id="about">
-    <!-- 简介部分 -->
-    <section class="about-section">
-      <div class="about-intro">
-        <h2 class="about-name">{personalInfo.name}</h2>
-        <p class="about-title"><span class="lang-zh">{personalInfo.titleZh}</span><span class="lang-en">{personalInfo.titleEn}</span></p>
-        <p class="about-bio"><span class="lang-zh">{personalInfo.bioZh}</span><span class="lang-en">{personalInfo.bioEn}</span></p>
-      </div>
-    </section>
-
-    <!-- 联系信息 -->
-    <section class="about-section">
-      <h2 class="section-title"><span class="lang-zh">联系</span><span class="lang-en">Contact</span></h2>
-      <div class="contact-info">
-        <div class="contact-item">
-          <span class="contact-label"><span class="lang-zh">位置</span><span class="lang-en">Location</span></span>
-          <span class="contact-value">{personalInfo.location}</span>
-        </div>
-        <div class="contact-item">
-          <span class="contact-label"><span class="lang-zh">邮箱</span><span class="lang-en">Email</span></span>
-          <a href={`mailto:${personalInfo.email}`} class="contact-value">{personalInfo.email}</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- 技能 -->
-    <section class="about-section">
-      <h2 class="section-title"><span class="lang-zh">技能</span><span class="lang-en">Skills</span></h2>
-      <div class="skills-grid">
-        <div class="skill-category">
-          <h3 class="skill-category-title"><span class="lang-zh">技术技能</span><span class="lang-en">Technical</span></h3>
-          <div class="tags-container">
-            {skills.technical.map((skill) => (
-              <span class="tag">{skill}</span>
-            ))}
-          </div>
-        </div>
-        <div class="skill-category">
-          <h3 class="skill-category-title"><span class="lang-zh">创意技能</span><span class="lang-en">Creative</span></h3>
-          <div class="tags-container">
-            {skills.creative.map((skill) => (
-              <span class="tag">{skill}</span>
-            ))}
-          </div>
-        </div>
-        <div class="skill-category">
-          <h3 class="skill-category-title"><span class="lang-zh">语言</span><span class="lang-en">Languages</span></h3>
-          <div class="tags-container">
-            {skills.languages.map((lang) => (
-              <span class="tag">{lang}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 兴趣 -->
-    <section class="about-section">
-      <h2 class="section-title"><span class="lang-zh">兴趣</span><span class="lang-en">Interests</span></h2>
-      <div class="tags-container">
-        {interests.map((interest) => (
-          <span class="tag tag-interest">{interest}</span>
-        ))}
-      </div>
-    </section>
-  </div>
 
   <script>
     (function () {
@@ -143,6 +81,30 @@ const interests = ["Film", "Games", "Music", "Technology", "Art"];
 
       setTimeout(tick, 400);
     })();
+
+    (function () {
+      const btn = document.querySelector<HTMLButtonElement>('.landing-email');
+      const hint = document.querySelector('.landing-copy-hint');
+      if (!btn || !hint) return;
+      const email = btn.dataset.email || '';
+      let hideTimer: ReturnType<typeof setTimeout> | null = null;
+      btn.addEventListener('click', async function (e) {
+        e.preventDefault();
+        try {
+          await navigator.clipboard.writeText(email);
+          const isZh = document.documentElement.lang === 'zh' || document.documentElement.lang === 'zh-CN';
+          hint.textContent = isZh ? (hint.getAttribute('data-hint-zh') || '已复制') : (hint.getAttribute('data-hint-en') || 'Copied');
+          hint.classList.add('is-visible');
+          if (hideTimer) clearTimeout(hideTimer);
+          hideTimer = setTimeout(function () {
+            hint.classList.remove('is-visible');
+            hideTimer = null;
+          }, 1500);
+        } catch (_) {
+          window.location.href = 'mailto:' + email;
+        }
+      });
+    })();
   </script>
 </BaseLayout>
 
@@ -150,21 +112,25 @@ const interests = ["Film", "Games", "Music", "Technology", "Art"];
   .landing {
     min-height: calc(100vh - 12rem);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-3xl) var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-3xl);
+    box-sizing: border-box;
   }
 
   .landing-title {
     margin: 0;
     font-size: clamp(2.5rem, 10vw, var(--font-size-4xl));
     font-weight: var(--font-weight-black);
+    font-family: var(--font-family-base);
     color: var(--color-text);
     text-transform: none;
     letter-spacing: var(--letter-spacing-normal);
     border: none;
     padding: 0;
     line-height: 1.2;
+    min-height: 1.2em;
   }
 
   .landing-word {
@@ -181,146 +147,81 @@ const interests = ["Film", "Games", "Music", "Technology", "Art"];
     51%, 100% { opacity: 0; }
   }
 
-  /* 关于区块（与首页合并） */
-  .about-container {
-    max-width: 800px;
-    margin: 0 auto;
+  .landing-contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xl);
+    padding: 0 var(--spacing-lg);
+    font-family: var(--font-family-base);
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .about-section {
-    margin-bottom: var(--spacing-2xl);
-    padding-bottom: var(--spacing-xl);
-    border-bottom: var(--border-width-thin) solid var(--color-border-light);
-  }
-
-  .about-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
-
-  .about-intro {
-    text-align: center;
-    margin-bottom: var(--spacing-lg);
-  }
-
-  .about-name {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-black);
-    color: var(--color-text);
-    margin: 0 0 var(--spacing-sm) 0;
-    letter-spacing: var(--letter-spacing-tight);
-  }
-
-  .about-title {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
-    margin: 0 0 var(--spacing-md) 0;
-    font-weight: var(--font-weight-medium);
-  }
-
-  .about-bio {
-    font-size: var(--font-size-base);
-    color: var(--color-text);
-    line-height: var(--line-height-relaxed);
-    margin: 0;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .section-title {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text);
-    margin: 0 0 var(--spacing-lg) 0;
-    padding-bottom: var(--spacing-sm);
-    border-bottom: var(--border-width-medium) solid var(--color-primary);
+  .landing-contact-line {
     display: inline-block;
-  }
-
-  .contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-
-  .contact-item {
-    display: flex;
-    align-items: baseline;
-    gap: var(--spacing-md);
-  }
-
-  .contact-label {
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-secondary);
-    min-width: 80px;
-    font-size: var(--font-size-sm);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
-  }
-
-  .contact-value {
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+    font-weight: 450;
+    letter-spacing: var(--letter-spacing-normal);
     color: var(--color-text);
-    font-size: var(--font-size-base);
-  }
-
-  .contact-value a {
-    color: var(--color-link);
     text-decoration: none;
-    transition: color var(--transition-base);
+    border-bottom: var(--border-width-medium) solid transparent;
+    transition: color var(--transition-base), border-color var(--transition-base);
   }
 
-  .contact-value a:hover {
-    color: var(--color-link-hover);
-    border-bottom: var(--border-width-medium) solid var(--color-link);
+  .landing-contact-line:hover {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
   }
 
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-xl);
-    margin-top: var(--spacing-lg);
+  .landing-email-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
   }
 
-  .skill-category {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-
-  .skill-category-title {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
+  .landing-email {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-family-base);
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+    font-weight: 450;
+    letter-spacing: var(--letter-spacing-normal);
     color: var(--color-text);
-    margin: 0;
+    cursor: pointer;
+    border-bottom: var(--border-width-medium) solid transparent;
+    transition: color var(--transition-base), border-color var(--transition-base);
   }
 
-  .tag-interest {
-    background-color: var(--color-bg-secondary);
+  .landing-email:hover {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
   }
 
-  @media screen and (max-width: 768px) {
-    .about-name {
-      font-size: var(--font-size-2xl);
-    }
-
-    .about-title {
-      font-size: var(--font-size-base);
-    }
-
-    .skills-grid {
-      grid-template-columns: 1fr;
-      gap: var(--spacing-lg);
-    }
-
-    .contact-item {
-      flex-direction: column;
-      gap: var(--spacing-xs);
-    }
-
-    .contact-label {
-      min-width: auto;
-    }
+  .landing-email:focus {
+    outline: none;
   }
+
+  .landing-email:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .landing-copy-hint {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  .landing-copy-hint.is-visible {
+    opacity: 1;
+  }
+
 </style>
