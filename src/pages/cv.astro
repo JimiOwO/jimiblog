@@ -37,12 +37,13 @@ const pdfUrl = '/CV.pdf';
 
       container.innerHTML = '';
 
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const pixelRatio = window.devicePixelRatio || 1;
       const firstPage = await pdf.getPage(1);
       const baseViewport = firstPage.getViewport({ scale: 1 });
       const containerWidth = container.clientWidth || document.documentElement.clientWidth || 375;
       const scaleToFit = containerWidth / baseViewport.width;
-      const scale = Math.min(pixelRatio, scaleToFit, 2);
+      // 按显示宽度渲染，并乘以设备像素比以接近原始分辨率，避免糊
+      const scale = scaleToFit * Math.min(pixelRatio, 3);
 
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
@@ -53,8 +54,8 @@ const pdfUrl = '/CV.pdf';
         canvas.height = viewport.height;
         canvas.width = viewport.width;
         canvas.className = 'cv-page';
-        canvas.style.width = viewport.width + 'px';
-        canvas.style.height = viewport.height + 'px';
+        canvas.style.width = containerWidth + 'px';
+        canvas.style.height = (containerWidth * viewport.height / viewport.width) + 'px';
 
         await page.render({
           canvasContext: context,
