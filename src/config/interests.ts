@@ -17,7 +17,7 @@ export const interests: InterestItem[] = [
     tagEn: 'Languages', 
     size: 'l', 
     detail: '我会说四种语言。\nI speak 4 languages.\n4か国語を话します。\nJag talar 4 språk.', 
-    detailEn: 'I speak four languages: Chinese, English, Japanese, and Swedish.' 
+    detailEn: '我会说四种语言。\nI speak 4 languages.\n4か国語を话します。\nJag talar 4 språk.'
   },
   { 
     slug: 'tech', 

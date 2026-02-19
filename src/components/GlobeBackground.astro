@@ -147,18 +147,6 @@ import { visitedPlaces } from '../config/visitedPlaces';
       ctx.fill();
     });
 
-    // Subtle label at the bottom of the globe
-    var fontSize = Math.round(SIZE * 0.018);
-    ctx.save();
-    ctx.font = '300 ' + fontSize + 'px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)';
-    var cx = SIZE / 2;
-    var lineH = fontSize * 1.6;
-    ctx.fillText('I go to places, and leave red dots.', cx, SIZE * 0.76);
-    ctx.fillText(placesData.length + ' and counting.', cx, SIZE * 0.76 + lineH);
-    ctx.restore();
   }
 
   function animate() {
