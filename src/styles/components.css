@@ -259,18 +259,33 @@ html.dark .nav-links a:hover {
   background: none;
   cursor: pointer;
   padding: var(--spacing-sm);
+  color: var(--color-text);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+}
+
+.theme-toggle:hover {
+  color: var(--color-primary);
+}
+
+.theme-toggle-icon {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.theme-toggle svg {
-  width: 30px;
-  height: 30px;
+.theme-toggle-icon svg {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .theme-toggle .sun {
-  fill: var(--color-text);
+  fill: currentColor;
 }
 
 .theme-toggle .moon {
@@ -282,5 +297,5 @@ html.dark .theme-toggle .sun {
 }
 
 html.dark .theme-toggle .moon {
-  fill: var(--color-text);
+  fill: currentColor;
 }
