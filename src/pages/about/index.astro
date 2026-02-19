@@ -1,0 +1,329 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { interests } from '../../config/interests';
+---
+<BaseLayout pageTitle="关于" pageTitleZh="关于" pageTitleEn="About">
+  <main class="about">
+    <header class="about-hero">
+      <p class="about-hero-bio">
+        <span class="lang-zh">关于我的一些小事</span>
+        <span class="lang-en">What am I made of?</span>
+      </p>
+    </header>
+
+    <div class="about-backdrop" id="about-backdrop" aria-hidden="true"></div>
+    <div class="about-grid" aria-label="兴趣与能力">
+      {interests.map((item) => (
+        <article
+          class={`about-card about-card--${item.size}`}
+          role="button"
+          tabindex="0"
+          data-slug={item.slug}
+          data-detail-zh={item.detail}
+          data-detail-en={item.detailEn}
+          data-tag-zh={item.tag}
+          data-tag-en={item.tagEn}
+        >
+          <h2 class="about-card-title">
+            <span class="lang-zh">{item.tag}</span>
+            <span class="lang-en">{item.tagEn}</span>
+          </h2>
+          <p class="about-card-detail">
+            <span class="lang-zh">{item.detail}</span>
+            <span class="lang-en">{item.detailEn}</span>
+          </p>
+        </article>
+      ))}
+    </div>
+
+    <!-- 展开后的预览层：独立页面风格 -->
+    <div class="about-panel" id="about-panel" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="about-panel-heading">
+      <div class="about-panel-inner">
+        <button type="button" class="about-panel-close" id="about-panel-close" data-aria-label-zh="关闭" data-aria-label-en="Close" aria-label="关闭">×</button>
+        <header class="about-panel-header">
+          <h1 class="about-panel-title" id="about-panel-heading">
+            <span class="lang-zh" id="about-panel-title-zh"></span>
+            <span class="lang-en" id="about-panel-title-en"></span>
+          </h1>
+        </header>
+        <div class="about-panel-body">
+          <span class="lang-zh" id="about-panel-body-zh"></span>
+          <span class="lang-en" id="about-panel-body-en"></span>
+        </div>
+        <a href="/about" class="about-panel-fullpage" id="about-panel-fullpage">
+          <span class="lang-zh">打开独立页面</span>
+          <span class="lang-en">Open full page</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script is:inline>
+    (function () {
+      var cards = document.querySelectorAll('.about-card');
+      var backdrop = document.getElementById('about-backdrop');
+      var panel = document.getElementById('about-panel');
+      var panelTitleZh = document.getElementById('about-panel-title-zh');
+      var panelTitleEn = document.getElementById('about-panel-title-en');
+      var panelBodyZh = document.getElementById('about-panel-body-zh');
+      var panelBodyEn = document.getElementById('about-panel-body-en');
+      var panelClose = document.getElementById('about-panel-close');
+      var panelFullpage = document.getElementById('about-panel-fullpage');
+
+      function closePanel() {
+        if (panel && backdrop) {
+          panel.classList.remove('about-panel--open');
+          panel.setAttribute('aria-hidden', 'true');
+          backdrop.classList.remove('about-backdrop--visible');
+          backdrop.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      function openPanel(card) {
+        var slug = card.getAttribute('data-slug');
+        var tagZh = card.getAttribute('data-tag-zh') || '';
+        var tagEn = card.getAttribute('data-tag-en') || '';
+        var detailZh = card.getAttribute('data-detail-zh') || '暂无内容，可在 src/config/interests.ts 中编辑。';
+        var detailEn = card.getAttribute('data-detail-en') || 'No content yet. Edit src/config/interests.ts.';
+        if (panelTitleZh) panelTitleZh.textContent = tagZh;
+        if (panelTitleEn) panelTitleEn.textContent = tagEn;
+        if (panelBodyZh) panelBodyZh.textContent = detailZh;
+        if (panelBodyEn) panelBodyEn.textContent = detailEn;
+        if (panelFullpage && slug) panelFullpage.href = '/about/' + slug;
+        var r = card.getBoundingClientRect();
+        panel.style.setProperty('--start-left', r.left + 'px');
+        panel.style.setProperty('--start-top', r.top + 'px');
+        panel.style.setProperty('--start-width', r.width + 'px');
+        panel.style.setProperty('--start-height', r.height + 'px');
+        panel.classList.add('about-panel--open');
+        panel.setAttribute('aria-hidden', 'false');
+        backdrop.classList.add('about-backdrop--visible');
+        backdrop.setAttribute('aria-hidden', 'false');
+      }
+
+      backdrop.addEventListener('click', closePanel);
+      if (panelClose) panelClose.addEventListener('click', closePanel);
+      if (panelFullpage) panelFullpage.addEventListener('click', function (e) { e.stopPropagation(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && panel && panel.classList.contains('about-panel--open')) closePanel();
+      });
+
+      cards.forEach(function (card) {
+        card.addEventListener('click', function (e) {
+          e.preventDefault();
+          openPanel(card);
+        });
+        card.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openPanel(card);
+          }
+        });
+      });
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: 896px;
+    margin: 0 auto;
+    padding: var(--spacing-3xl) var(--container-padding);
+  }
+
+  .about-hero {
+    margin-bottom: var(--spacing-3xl);
+  }
+
+  .about-hero-bio {
+    margin: 0;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  .about-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-modal) - 1);
+    background: rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  .about-backdrop--visible {
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 128px;
+    gap: 13px;
+  }
+
+  .about-card {
+    position: relative;
+    background-color: var(--color-bg-secondary);
+    transition: transform var(--transition-base), background-color var(--transition-base), color var(--transition-base);
+    border-radius: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+    outline: none;
+  }
+
+  .about-card:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .about-card:hover {
+    transform: scale(1.05);
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .about-card--s { grid-column: span 1; grid-row: span 1; }
+  .about-card--m { grid-column: span 2; grid-row: span 1; }
+  .about-card--l { grid-column: span 2; grid-row: span 2; }
+  .about-card--x { grid-column: span 1; grid-row: span 2; }
+
+  .about-card-title {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+    text-align: center;
+    transition: opacity var(--transition-base);
+  }
+
+  .about-card:hover .about-card-title {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .about-card-detail {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+    text-align: center;
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden;
+    transition: max-height var(--transition-slow), opacity var(--transition-fast);
+  }
+
+  .about-card:hover .about-card-detail {
+    max-height: 160px;
+    opacity: 1;
+    visibility: visible;
+    font-size: var(--font-size-base);
+    color: var(--color-white);
+  }
+
+  /* 展开预览层：从卡片位置展开到居中 */
+  .about-panel {
+    position: fixed;
+    z-index: var(--z-modal);
+    background: var(--color-bg);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    pointer-events: none;
+    overflow: auto;
+  }
+
+  .about-panel--open {
+    opacity: 1;
+    pointer-events: auto;
+    animation: about-panel-expand 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  @keyframes about-panel-expand {
+    from {
+      left: var(--start-left, 50%);
+      top: var(--start-top, 50%);
+      width: var(--start-width, 65vw);
+      height: var(--start-height, 80vh);
+      transform: translate(0, 0);
+    }
+    to {
+      left: 50%;
+      top: 50%;
+      width: min(65vw, 720px);
+      height: 80vh;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .about-panel-inner {
+    padding: var(--spacing-xl);
+    position: relative;
+  }
+
+  .about-panel-close {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: color var(--transition-base);
+  }
+
+  .about-panel-close:hover {
+    color: var(--color-text);
+  }
+
+  .about-panel-close:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .about-panel-header {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .about-panel-title {
+    margin: 0;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-text);
+    border-left: var(--border-width-decorative) solid var(--color-primary);
+    padding-left: var(--spacing-lg);
+  }
+
+  .about-panel-body {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xl);
+    white-space: pre-wrap;
+  }
+
+  .about-panel-fullpage {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .about-panel-fullpage:hover {
+    text-decoration: underline;
+  }
+</style>

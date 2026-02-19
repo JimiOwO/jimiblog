@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { interests } from '../../config/interests';
+
+export function getStaticPaths() {
+  return interests.map((item) => ({ params: { slug: item.slug } }));
+}
+
+const { slug } = Astro.params;
+const item = interests.find((i) => i.slug === slug);
+if (!item) return Astro.redirect('/about');
+---
+<BaseLayout pageTitle={item.tag} pageTitleZh={item.tag} pageTitleEn={item.tagEn}>
+  <article class="interest-page">
+    <a href="/about" class="interest-page-back">
+      <span class="lang-zh">← 返回</span>
+      <span class="lang-en">← Back</span>
+    </a>
+    <header class="interest-page-header">
+      <h1 class="interest-page-title">
+        <span class="lang-zh">{item.tag}</span>
+        <span class="lang-en">{item.tagEn}</span>
+      </h1>
+    </header>
+    <div class="interest-page-body">
+      <p>
+        <span class="lang-zh">{item.detail || '暂无内容，可在 src/config/interests.ts 中编辑。'}</span>
+        <span class="lang-en">{item.detailEn || 'No content yet. Edit src/config/interests.ts.'}</span>
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .interest-page {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: var(--spacing-3xl) var(--container-padding);
+  }
+
+  .interest-page-back {
+    display: inline-block;
+    margin-bottom: var(--spacing-xl);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-base);
+  }
+
+  .interest-page-back:hover {
+    color: var(--color-primary);
+  }
+
+  .interest-page-back:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .interest-page-header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .interest-page-title {
+    margin: 0;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-text);
+    border-left: var(--border-width-decorative) solid var(--color-primary);
+    padding-left: var(--spacing-lg);
+  }
+
+  .interest-page-body {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text);
+  }
+
+  .interest-page-body p {
+    margin: 0;
+  }
+</style>
