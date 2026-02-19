@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import GlobeBackground from '../components/GlobeBackground.astro';
+import { visitedPlaces } from '../config/visitedPlaces';
 const pageTitle = "首页";
 
 const contact = {
@@ -8,19 +10,19 @@ const contact = {
   locationLng: -73.695461,
   email: "jimipengowo@gmail.com",
   phone: "+1 518 246 0692",
-  title: "I make and break stuff.",
+  title: `I go to places, and leave red dots. \n${visitedPlaces.length} and counting.`,
   phoneTel: "+15182460692",
 };
 ---
 
 <BaseLayout pageTitle={pageTitle} pageTitleZh="首页" pageTitleEn="Home">
   <section class="landing">
+    <GlobeBackground />
     <h1 class="landing-title" id="landing-greeting">
       <span class="landing-word"></span>
       <span class="landing-cursor">|</span>
     </h1>
     <div class="landing-contact">
-      <p class="landing-title-sub">{contact.title}</p>
       <div class="landing-email-wrap">
         <button type="button" class="landing-email" data-email={contact.email} title="点击复制 / Click to copy">
           {contact.email}
@@ -33,6 +35,7 @@ const contact = {
       <a href={`https://earth.google.com/web/@${contact.locationLat},${contact.locationLng},500a,90d,0y,0h,0t,0r`} target="_blank" rel="noopener noreferrer" class="landing-contact-line" title="在 Google Earth 中查看 / View in Google Earth">
         {contact.locationLabel} · {contact.locationLat.toFixed(4)}°, {contact.locationLng.toFixed(4)}°
       </a>
+      <p class="landing-title-sub">{contact.title}</p>
     </div>
   </section>
 
@@ -118,6 +121,7 @@ const contact = {
 
 <style>
   .landing {
+    position: relative;
     min-height: calc(100vh - 12rem);
     display: flex;
     flex-direction: column;
@@ -125,6 +129,13 @@ const contact = {
     justify-content: center;
     padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-3xl);
     box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .landing-title,
+  .landing-contact {
+    position: relative;
+    z-index: 1;
   }
 
   .landing-title {

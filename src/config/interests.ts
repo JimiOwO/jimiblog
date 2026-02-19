@@ -1,6 +1,7 @@
 /**
  * Interests configuration
- * Make direct changes here, and the changes will be reflected in the about page and individual interest pages.
+ * 
+
  */
 export interface InterestItem {
   slug: string;
@@ -57,8 +58,8 @@ export const interests: InterestItem[] = [
     tag: '设计',
     tagEn: 'Design', 
     size: 'x', 
-    detail: '默认字体和明亮模式爱好者。', 
-    detailEn: 'I obsess over default fonts and light mode.' 
+    detail: '默认字体爱好者。', 
+    detailEn: 'I use default fonts, for reasons.' 
   },
   { 
     slug: 'photography', 

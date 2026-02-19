@@ -1,0 +1,334 @@
+---
+import { visitedPlaces } from '../config/visitedPlaces';
+---
+
+
+<script is:inline define:vars={{ placesData: visitedPlaces }}>
+(async function () {
+  var canvas = document.getElementById('globe-canvas');
+  var tooltip = document.getElementById('globe-tooltip');
+  var wrap = document.getElementById('globe-wrap');
+  if (!canvas || !wrap) return;
+
+  var ctx = canvas.getContext('2d');
+  var d3, topojson;
+
+  try {
+    var results = await Promise.all([
+      import('https://cdn.jsdelivr.net/npm/d3@7/+esm'),
+      import('https://cdn.jsdelivr.net/npm/topojson-client@3/+esm')
+    ]);
+    d3 = results[0];
+    topojson = results[1];
+  } catch (e) {
+    console.warn('Globe: failed to load dependencies', e);
+    return;
+  }
+
+  function getSize() {
+    return Math.min(480, wrap.clientWidth);
+  }
+
+  var size = getSize();
+  canvas.width = size;
+  canvas.height = size;
+
+  var projection = d3.geoOrthographic()
+    .scale(size / 2 - 2)
+    .translate([size / 2, size / 2])
+    .clipAngle(90);
+
+  var pathGen = d3.geoPath(projection, ctx);
+  var graticule = d3.geoGraticule()();
+  var sphere = { type: 'Sphere' };
+
+  var rotation = [-110, -30, 0];
+  var isDragging = false;
+  var lastDragX = 0;
+  var lastDragY = 0;
+  var autoRotate = true;
+  var autoRotateTimer = null;
+  var land = null;
+  var borders = null;
+  var animFrame = null;
+
+  function isDark() {
+    return document.documentElement.classList.contains('dark');
+  }
+
+  function getLang() {
+    return document.documentElement.lang || 'zh';
+  }
+
+  function render() {
+    var dark = isDark();
+    ctx.clearRect(0, 0, size, size);
+    projection.rotate(rotation);
+
+    // Ocean
+    ctx.beginPath();
+    pathGen(sphere);
+    ctx.fillStyle = dark ? '#1e1e1e' : '#ebebeb';
+    ctx.fill();
+
+    // Graticule
+    ctx.beginPath();
+    pathGen(graticule);
+    ctx.strokeStyle = dark ? '#282828' : '#dcdcdc';
+    ctx.lineWidth = 0.4;
+    ctx.stroke();
+
+    // Land
+    if (land) {
+      ctx.beginPath();
+      pathGen(land);
+      ctx.fillStyle = dark ? '#383838' : '#c2c2c2';
+      ctx.fill();
+    }
+
+    // Country borders
+    if (borders) {
+      ctx.beginPath();
+      pathGen(borders);
+      ctx.strokeStyle = dark ? '#464646' : '#b0b0b0';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+    }
+
+    // Globe outline
+    ctx.beginPath();
+    pathGen(sphere);
+    ctx.strokeStyle = dark ? '#505050' : '#a0a0a0';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Visited place dots
+    placesData.forEach(function (place) {
+      var projected = projection(place.coords);
+      if (!projected) return;
+      var px = projected[0];
+      var py = projected[1];
+
+      // Glow halo
+      var grd = ctx.createRadialGradient(px, py, 0, px, py, 10);
+      grd.addColorStop(0, 'rgba(239,68,68,0.4)');
+      grd.addColorStop(1, 'rgba(239,68,68,0)');
+      ctx.beginPath();
+      ctx.arc(px, py, 10, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+
+      // Red dot
+      ctx.beginPath();
+      ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#ef4444';
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    });
+  }
+
+  function animate() {
+    if (autoRotate && !isDragging) {
+      rotation[0] += 0.1;
+    }
+    render();
+    animFrame = requestAnimationFrame(animate);
+  }
+
+  // Load world geodata
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(function (r) { return r.json(); })
+    .then(function (world) {
+      land = topojson.feature(world, world.objects.land);
+      borders = topojson.mesh(world, world.objects.countries, function (a, b) { return a !== b; });
+    })
+    .catch(function (e) { console.warn('Globe: failed to load world atlas', e); });
+
+  animate();
+
+  // Mouse drag & tooltip
+  canvas.addEventListener('mousedown', function (e) {
+    isDragging = true;
+    autoRotate = false;
+    clearTimeout(autoRotateTimer);
+    lastDragX = e.clientX;
+    lastDragY = e.clientY;
+    canvas.style.cursor = 'grabbing';
+  });
+
+  canvas.addEventListener('mousemove', function (e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = size / rect.width;
+    var scaleY = size / rect.height;
+    var mx = (e.clientX - rect.left) * scaleX;
+    var my = (e.clientY - rect.top) * scaleY;
+
+    if (isDragging) {
+      var dx = e.clientX - lastDragX;
+      var dy = e.clientY - lastDragY;
+      lastDragX = e.clientX;
+      lastDragY = e.clientY;
+      rotation[0] += dx * 0.35;
+      rotation[1] = Math.max(-80, Math.min(80, rotation[1] - dy * 0.35));
+      render();
+      return;
+    }
+
+    // Find nearest hovered place
+    var found = null;
+    var minDist = 14;
+    placesData.forEach(function (place) {
+      var proj = projection(place.coords);
+      if (!proj) return;
+      var dist = Math.hypot(mx - proj[0], my - proj[1]);
+      if (dist < minDist) {
+        minDist = dist;
+        found = place;
+      }
+    });
+
+    if (found && tooltip) {
+      var lang = getLang();
+      tooltip.textContent = found.name;
+      var wrapRect = wrap.getBoundingClientRect();
+      tooltip.style.left = (e.clientX - wrapRect.left + 10) + 'px';
+      tooltip.style.top = (e.clientY - wrapRect.top - 38) + 'px';
+      tooltip.style.opacity = '1';
+      tooltip.setAttribute('aria-hidden', 'false');
+      canvas.style.cursor = 'pointer';
+    } else {
+      if (tooltip) {
+        tooltip.style.opacity = '0';
+        tooltip.setAttribute('aria-hidden', 'true');
+      }
+      canvas.style.cursor = 'grab';
+    }
+  });
+
+  document.addEventListener('mouseup', function () {
+    if (isDragging) {
+      isDragging = false;
+      canvas.style.cursor = 'grab';
+      autoRotateTimer = setTimeout(function () { autoRotate = true; }, 3000);
+    }
+  });
+
+  canvas.addEventListener('mouseleave', function () {
+    if (tooltip) {
+      tooltip.style.opacity = '0';
+      tooltip.setAttribute('aria-hidden', 'true');
+    }
+  });
+
+  // Touch support
+  var lastTouch = null;
+  canvas.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    isDragging = true;
+    autoRotate = false;
+    clearTimeout(autoRotateTimer);
+    lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    if (!isDragging || !lastTouch) return;
+    var dx = e.touches[0].clientX - lastTouch.x;
+    var dy = e.touches[0].clientY - lastTouch.y;
+    lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    rotation[0] += dx * 0.35;
+    rotation[1] = Math.max(-80, Math.min(80, rotation[1] - dy * 0.35));
+    render();
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', function () {
+    isDragging = false;
+    autoRotateTimer = setTimeout(function () { autoRotate = true; }, 3000);
+  });
+
+  // Dark mode observer
+  new MutationObserver(function () { render(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+  // Lang change observer
+  new MutationObserver(function () { render(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+
+  // Resize
+  window.addEventListener('resize', function () {
+    var newSize = getSize();
+    if (Math.abs(newSize - size) > 5) {
+      size = newSize;
+      canvas.width = size;
+      canvas.height = size;
+      projection.scale(size / 2 - 2).translate([size / 2, size / 2]);
+    }
+  });
+})();
+</script>
+
+<style>
+  .globe-section {
+    margin-top: var(--spacing-3xl);
+  }
+
+  .globe-heading {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--spacing-xl) 0;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .globe-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #globe-canvas {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    transition: box-shadow var(--transition-base);
+  }
+
+  #globe-canvas:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  html.dark #globe-canvas:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .globe-tooltip {
+    position: absolute;
+    background-color: var(--color-text);
+    color: var(--color-bg);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    padding: 4px 10px;
+    border-radius: var(--border-radius-sm);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+    z-index: 20;
+    transform: translateY(-4px);
+  }
+
+  .globe-hint {
+    margin: var(--spacing-md) 0 0 0;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    text-align: center;
+    opacity: 0.6;
+  }
+</style>

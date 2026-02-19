@@ -1,0 +1,212 @@
+---
+import { visitedPlaces } from '../config/visitedPlaces';
+---
+
+<div class="globe-bg-wrap" aria-hidden="true">
+  <canvas id="globe-bg-canvas"></canvas>
+</div>
+
+<script is:inline define:vars={{ placesData: visitedPlaces }}>
+(async function () {
+  var canvas = document.getElementById('globe-bg-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var d3, topojson;
+  try {
+    var results = await Promise.all([
+      import('https://cdn.jsdelivr.net/npm/d3@7/+esm'),
+      import('https://cdn.jsdelivr.net/npm/topojson-client@3/+esm')
+    ]);
+    d3 = results[0];
+    topojson = results[1];
+  } catch (e) {
+    console.warn('GlobeBackground: failed to load dependencies', e);
+    return;
+  }
+
+  function getSize() {
+    return Math.max(window.innerWidth, window.innerHeight) * 0.8;
+  }
+
+  var SIZE = getSize();
+  canvas.width = SIZE;
+  canvas.height = SIZE;
+
+  var projection = d3.geoOrthographic()
+    .scale(SIZE / 2 - 2)
+    .translate([SIZE / 2, SIZE / 2])
+    .clipAngle(90);
+
+  var pathGen = d3.geoPath(projection, ctx);
+  var graticule = d3.geoGraticule()();
+  var sphere = { type: 'Sphere' };
+  var rotation = [-110, -30, 0];
+  var land = null;
+  var borders = null;
+
+  // Mouse-driven rotation + idle auto-rotate
+  var ORIGIN_PHI  = -30;
+  var RANGE_X     = 240;   // degrees sweepable left↔right
+  var RANGE_Y     = 60;    // degrees sweepable up↔down
+  var IDLE_SPEED  = 0.08;  // degrees per frame during idle
+  var IDLE_TIMEOUT = 100;  // ms of stillness before idle kicks in
+  var MOVE_THRESHOLD = 60;  // px of movement considered "significant"
+
+  var activeLambdaBase = -110; // recalibrated on idle→active to avoid jumps
+  var activePhibase    = ORIGIN_PHI;
+  var targetLambda     = activeLambdaBase;
+  var targetPhi        = ORIGIN_PHI;
+
+  var isIdle     = true;
+  var lastMoveX  = window.innerWidth  / 2;
+  var lastMoveY  = window.innerHeight / 2;
+  var lastMoveAt = 0;
+
+  window.addEventListener('mousemove', function (e) {
+    var dx   = e.clientX - lastMoveX;
+    var dy   = e.clientY - lastMoveY;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < MOVE_THRESHOLD) return;
+
+    lastMoveX  = e.clientX;
+    lastMoveY  = e.clientY;
+    lastMoveAt = Date.now();
+
+    var relX = (e.clientX / window.innerWidth  - 0.5) * RANGE_X;
+    var relY = (e.clientY / window.innerHeight - 0.5) * RANGE_Y;
+
+    if (isIdle) {
+      // Recalibrate bases so targetLambda == current rotation → no jump
+      activeLambdaBase = rotation[0] - relX;
+      activePhibase    = rotation[1] + relY;
+      isIdle = false;
+    }
+
+    targetLambda = activeLambdaBase + relX;
+    targetPhi    = activePhibase    - relY;
+  });
+
+  function isDark() {
+    return document.documentElement.classList.contains('dark');
+  }
+
+  function render() {
+    var dark = isDark();
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    projection.rotate(rotation);
+
+    // Ocean
+    ctx.beginPath();
+    pathGen(sphere);
+    ctx.fillStyle = dark ? '#1e1e1e' : '#ebebeb';
+    ctx.fill();
+
+    // Graticule
+    ctx.beginPath();
+    pathGen(graticule);
+    ctx.strokeStyle = dark ? '#272727' : '#dedede';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+
+    // Land
+    if (land) {
+      ctx.beginPath();
+      pathGen(land);
+      ctx.fillStyle = dark ? '#363636' : '#c4c4c4';
+      ctx.fill();
+    }
+
+    // Borders
+    if (borders) {
+      ctx.beginPath();
+      pathGen(borders);
+      ctx.strokeStyle = dark ? '#424242' : '#b4b4b4';
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+    }
+
+    // Globe outline
+    ctx.beginPath();
+    pathGen(sphere);
+    ctx.strokeStyle = dark ? '#484848' : '#a8a8a8';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Visited place dots
+    var dotColor = dark ? '#c64844' : '#a43632';
+    placesData.forEach(function (place) {
+      var projected = projection(place.coords);
+      if (!projected) return;
+      var px = projected[0];
+      var py = projected[1];
+
+      ctx.beginPath();
+      ctx.arc(px, py, 5, 0, Math.PI * 2);
+      ctx.fillStyle = dotColor;
+      ctx.fill();
+    });
+  }
+
+  function animate() {
+    if (!isIdle && Date.now() - lastMoveAt > IDLE_TIMEOUT) {
+      isIdle = true;
+    }
+
+    if (isIdle) {
+      targetLambda += IDLE_SPEED;
+      targetPhi    += (ORIGIN_PHI - targetPhi) * 0.02; // gently return to default tilt
+    }
+
+    rotation[0] += (targetLambda - rotation[0]) * 0.04;
+    rotation[1] += (targetPhi    - rotation[1]) * 0.04;
+    render();
+    requestAnimationFrame(animate);
+  }
+
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(function (r) { return r.json(); })
+    .then(function (world) {
+      land = topojson.feature(world, world.objects.land);
+      borders = topojson.mesh(world, world.objects.countries, function (a, b) { return a !== b; });
+    })
+    .catch(function (e) { console.warn('GlobeBackground: failed to load world atlas', e); });
+
+  animate();
+
+  new MutationObserver(function () { render(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+  window.addEventListener('resize', function () {
+    var newSize = getSize();
+    if (Math.abs(newSize - SIZE) > 10) {
+      SIZE = newSize;
+      canvas.width = SIZE;
+      canvas.height = SIZE;
+      projection.scale(SIZE / 2 - 2).translate([SIZE / 2, SIZE / 2]);
+    }
+  });
+})();
+</script>
+
+<style>
+  .globe-bg-wrap {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #globe-bg-canvas {
+    border-radius: 50%;
+    opacity: 0.28;
+    display: block;
+  }
+
+  html.dark #globe-bg-canvas {
+    opacity: 0.18;
+  }
+</style>
