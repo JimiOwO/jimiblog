@@ -16,7 +16,7 @@ export const interests: InterestItem[] = [
   { slug: 'music', tag: '音乐', tagEn: 'Music', size: 's', detail: '我爱弹吉他。\n不过弹得很烂。', detailEn: 'I love playing guitar\n although not very well.' },
   { slug: 'gaming', tag: '游戏', tagEn: 'Gaming', size: 'x', detail: '我是游戏大王。', detailEn: 'I am Big Game Nerd.' },
   { slug: 'reading', tag: '电影', tagEn: 'Movies', size: 'm', detail: '我身体的70%是电影构成的。', detailEn: '70% of my body is made of movies.' },
-  { slug: 'gaming', tag: '游戏', tagEn: 'Gaming', size: 'x', detail: '我是游戏大王。', detailEn: 'I am Big Game Nerd.' },
+  { slug: 'gaming', tag: '设计', tagEn: 'Design', size: 'x', detail: '默认字体爱好者', detailEn: 'I use default fonts, for reasons.' },
   { slug: 'photography', tag: '摄影', tagEn: 'Photography', size: 'm', detail: '我拍照还行。', detailEn: 'My photography skills are not bad.' },
   { slug: 'kendo', tag: '剑道', tagEn: 'Kendo', size: 's', detail: '我练习剑道很多年。', detailEn: 'I have been practicing kendo for many years.' },
 ];
