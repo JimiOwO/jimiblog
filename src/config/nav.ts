@@ -8,7 +8,7 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { href: '/', labelZh: '首页', labelEn: 'Home' },
+  { href: '/about', labelZh: '关于', labelEn: 'About' },
   { href: '/cv', labelZh: '简历', labelEn: 'CV' },
   { href: '/blog', labelZh: '博客', labelEn: 'Blog' },
 ];

@@ -14,6 +14,10 @@ const { currentPath = '/' } = Astro.props;
       <LangToggle />
       <Menu />
     </div>
+    <a href="/" class="header-logo" aria-label="首页">
+      <img src="/icons/Jimi_dark.png" alt="" class="logo-img logo-light" />
+      <img src="/icons/Jimi_light.png" alt="" class="logo-img logo-dark" />
+    </a>
     <Navigation currentPath={currentPath} />
   </nav>
 </header>
@@ -32,12 +36,38 @@ const { currentPath = '/' } = Astro.props;
     align-items: center;
     flex-wrap: wrap;
     gap: var(--spacing-md);
+    position: relative;
   }
 
   .header-nav-left {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .header-logo .logo-img {
+    height: 5rem;
+    width: auto;
+  }
+
+  .header-logo .logo-dark {
+    display: none;
+  }
+
+  html.dark .header-logo .logo-light {
+    display: none;
+  }
+
+  html.dark .header-logo .logo-dark {
+    display: block;
   }
 
   @media screen and (max-width: 635px) {
@@ -48,6 +78,10 @@ const { currentPath = '/' } = Astro.props;
 
     .header-nav-left {
       justify-content: space-between;
+    }
+
+    .header-logo {
+      padding: var(--spacing-xl) 0;
     }
   }
 </style>
