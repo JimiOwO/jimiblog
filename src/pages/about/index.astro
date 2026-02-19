@@ -119,6 +119,17 @@ import { interests } from '../../config/interests';
             openPanel(card);
           }
         });
+        card.addEventListener('mousemove', function (e) {
+          var r = card.getBoundingClientRect();
+          var x = (e.clientX - r.left) / r.width * 2 - 1;
+          var y = (e.clientY - r.top) / r.height * 2 - 1;
+          card.style.setProperty('--tilt-x', x);
+          card.style.setProperty('--tilt-y', y);
+        });
+        card.addEventListener('mouseleave', function () {
+          card.style.setProperty('--tilt-x', 0);
+          card.style.setProperty('--tilt-y', 0);
+        });
       });
     })();
   </script>
@@ -166,8 +177,10 @@ import { interests } from '../../config/interests';
 
   .about-card {
     position: relative;
-    background-color: var(--color-bg-secondary);
-    transition: transform var(--transition-base), background-color var(--transition-base), color var(--transition-base);
+    background-color: var(--color-gray-200);
+    --tilt-x: 0;
+    --tilt-y: 0;
+    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), background-color var(--transition-base), color var(--transition-base);
     border-radius: 0;
     cursor: pointer;
     display: flex;
@@ -176,6 +189,7 @@ import { interests } from '../../config/interests';
     justify-content: center;
     padding: var(--spacing-md);
     outline: none;
+    transform-origin: center center;
   }
 
   .about-card:focus-visible {
@@ -183,10 +197,22 @@ import { interests } from '../../config/interests';
     outline-offset: 2px;
   }
 
+  html.dark .about-card {
+    background-color: var(--color-gray-800);
+  }
+
   .about-card:hover {
-    transform: scale(1.05);
+    z-index: 10;
+    transform: perspective(600px) scale(1.5)
+      rotateX(calc(var(--tilt-y, 0) * -16deg))
+      rotateY(calc(var(--tilt-x, 0) * 16deg))
+      translate(calc(var(--tilt-x, 0) * 16px), calc(var(--tilt-y, 0) * 16px));
     background-color: var(--color-primary);
     color: var(--color-white);
+  }
+
+  html.dark .about-card:hover {
+    background-color: var(--color-primary);
   }
 
   .about-card--s { grid-column: span 1; grid-row: span 1; }
@@ -216,6 +242,7 @@ import { interests } from '../../config/interests';
     color: var(--color-text-secondary);
     line-height: var(--line-height-relaxed);
     text-align: center;
+    white-space: pre-line;
     max-height: 0;
     opacity: 0;
     visibility: hidden;
