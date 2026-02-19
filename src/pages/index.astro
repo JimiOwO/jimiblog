@@ -2,17 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GlobeBackground from '../components/GlobeBackground.astro';
 import { visitedPlaces } from '../config/visitedPlaces';
+import { contact } from '../config/mefacts';
 const pageTitle = "首页";
-
-const contact = {
-  locationLabel: "Troy, NY",
-  locationLat: 42.72364,
-  locationLng: -73.695461,
-  email: "jimipengowo@gmail.com",
-  phone: "+1 518 246 0692",
-  title: `I go to places, and leave red dots. \n${visitedPlaces.length} and counting.`,
-  phoneTel: "+15182460692",
-};
 ---
 
 <BaseLayout pageTitle={pageTitle} pageTitleZh="首页" pageTitleEn="Home">
@@ -33,7 +24,7 @@ const contact = {
         {contact.phone}
       </a>
       <a href={`https://earth.google.com/web/@${contact.locationLat},${contact.locationLng},500a,90d,0y,0h,0t,0r`} target="_blank" rel="noopener noreferrer" class="landing-contact-line" title="在 Google Earth 中查看 / View in Google Earth">
-        {contact.locationLabel} · {contact.locationLat.toFixed(4)}°, {contact.locationLng.toFixed(4)}°
+        {contact.locationLabel} · {contact.locationLat.toFixed(2)}°, {contact.locationLng.toFixed(2)}°
       </a>
       <p class="landing-title-sub">{contact.title}</p>
     </div>

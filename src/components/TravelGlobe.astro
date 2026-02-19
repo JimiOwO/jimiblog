@@ -2,6 +2,20 @@
 import { visitedPlaces } from '../config/visitedPlaces';
 ---
 
+<section class="globe-section" aria-label="旅行足迹">
+  <h2 class="globe-heading">
+    <span class="lang-zh">我去过的地方</span>
+    <span class="lang-en">Places I've Been</span>
+  </h2>
+  <div class="globe-wrap" id="globe-wrap">
+    <canvas id="globe-canvas" style="cursor: grab;" aria-label="可拖拽旋转的地球仪"></canvas>
+    <div class="globe-tooltip" id="globe-tooltip" role="tooltip" aria-hidden="true"></div>
+  </div>
+  <p class="globe-hint">
+    <span class="lang-zh">拖拽旋转 · 悬停查看地点</span>
+    <span class="lang-en">Drag to rotate · hover to see places</span>
+  </p>
+</section>
 
 <script is:inline define:vars={{ placesData: visitedPlaces }}>
 (async function () {

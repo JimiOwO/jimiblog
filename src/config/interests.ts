@@ -1,7 +1,5 @@
 /**
  * Interests configuration
- * 
-
  */
 export interface InterestItem {
   slug: string;

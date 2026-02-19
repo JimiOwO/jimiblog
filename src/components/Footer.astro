@@ -14,16 +14,9 @@ const currentYear = new Date().getFullYear();
   </div>
 
   <div class="footer-credits">
-    <a
-      class="footer-name"
-      href="https://www.linkedin.com/in/jimipeng/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Jianye &ldquo;Jimi&rdquo; Peng
-    </a>
-    <span class="footer-year">© 2025{currentYear > 2025 ? `–${currentYear}` : ''}</span>
-    <span class="footer-disclaimer">Views expressed are my own.</span>
+    <p class="footer-byline">
+      © 2025{currentYear > 2025 ? `–${currentYear}` : ''}&nbsp;&nbsp;Jianye &ldquo;Jimi&rdquo; Peng&nbsp;&nbsp;·&nbsp;&nbsp;Views expressed are my own.
+    </p>
   </div>
 </footer>
 
@@ -49,37 +42,16 @@ const currentYear = new Date().getFullYear();
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.2rem;
     padding-bottom: var(--spacing-md);
   }
 
-  .footer-name {
+  .footer-byline {
+    margin: 0;
     font-size: var(--font-size-xs);
-    font-weight: 400;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     color: var(--color-text-secondary);
-    text-decoration: none;
-    opacity: 0.45;
-    transition: opacity 0.2s ease;
-  }
-
-  .footer-name:hover {
-    opacity: 0.7;
-  }
-
-  .footer-year {
-    font-size: var(--font-size-xs);
-    letter-spacing: 0.03em;
-    color: var(--color-text-secondary);
-    opacity: 0.25;
-  }
-
-  .footer-disclaimer {
-    font-size: var(--font-size-xs);
-    letter-spacing: 0.03em;
-    color: var(--color-text-secondary);
-    opacity: 0.25;
-    margin-top: 0.15rem;
+    opacity: 0.3;
   }
 
   @media screen and (max-width: 768px) {

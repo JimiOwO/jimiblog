@@ -84,6 +84,12 @@ const pageTitle = "博客";
       filterPosts(btn.getAttribute('data-filter') ?? 'all');
     });
   });
+
+  // 页面加载时读取 URL 的 ?tag= 参数并自动激活对应标签
+  const urlTag = new URLSearchParams(window.location.search).get('tag');
+  if (urlTag) {
+    filterPosts(urlTag);
+  }
 </script>
 
 <style>
