@@ -17,6 +17,8 @@ const pdfUrl = '/CV.pdf';
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
+  declare const pdfjsLib: any;
+
   async function renderPDF() {
     const container = document.getElementById('pdf-container');
     if (!container) return;
@@ -29,7 +31,6 @@ const pdfUrl = '/CV.pdf';
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
     const pdfUrl = container.dataset.pdfUrl || '/CV.pdf';
-    (window as any).__pdfUrl = pdfUrl;
 
     try {
       const loadingTask = pdfjsLib.getDocument(pdfUrl);
@@ -37,13 +38,13 @@ const pdfUrl = '/CV.pdf';
 
       container.innerHTML = '';
 
-      const pixelRatio = window.devicePixelRatio || 1;
+      const MAX_PIXEL_RATIO = 3;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
       const firstPage = await pdf.getPage(1);
       const baseViewport = firstPage.getViewport({ scale: 1 });
       const containerWidth = container.clientWidth || document.documentElement.clientWidth || 375;
       const scaleToFit = containerWidth / baseViewport.width;
-      // 按显示宽度渲染，并乘以设备像素比以接近原始分辨率，避免糊
-      const scale = scaleToFit * Math.min(pixelRatio, 3);
+      const scale = scaleToFit * pixelRatio;
 
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
@@ -65,7 +66,7 @@ const pdfUrl = '/CV.pdf';
       }
     } catch (error) {
       console.error('PDF 加载失败:', error);
-      const openPdf = (window as any).__pdfUrl || pdfUrl;
+      const openPdf = pdfUrl;
       container.innerHTML = '<div class="cv-error"><span class="lang-zh">无法加载预览，<a href="' + openPdf + '" target="_blank" rel="noopener noreferrer">点击此处打开 PDF</a></span><span class="lang-en">Preview failed. <a href="' + openPdf + '" target="_blank" rel="noopener noreferrer">Click here to open PDF</a></span></div>';
     }
   }

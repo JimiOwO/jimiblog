@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { interests } from '../../config/interests';
 ---
 <BaseLayout pageTitle="关于" pageTitleZh="关于" pageTitleEn="About">
-  <main class="about">
+  <div class="about">
     <header class="about-hero">
       <p class="about-hero-bio">
         <span class="lang-zh">关于我的一些小事</span>
@@ -56,7 +56,7 @@ import { interests } from '../../config/interests';
         </a>
       </div>
     </div>
-  </main>
+  </div>
 
   <script is:inline>
     (function () {
@@ -201,18 +201,34 @@ import { interests } from '../../config/interests';
     background-color: var(--color-gray-800);
   }
 
-  .about-card:hover {
-    z-index: 10;
-    transform: perspective(600px) scale(1.5)
-      rotateX(calc(var(--tilt-y, 0) * -16deg))
-      rotateY(calc(var(--tilt-x, 0) * 16deg))
-      translate(calc(var(--tilt-x, 0) * 16px), calc(var(--tilt-y, 0) * 16px));
-    background-color: var(--color-primary);
-    color: var(--color-white);
-  }
+  @media (hover: hover) {
+    .about-card:hover {
+      z-index: 10;
+      transform: perspective(600px) scale(1.5)
+        rotateX(calc(var(--tilt-y, 0) * -16deg))
+        rotateY(calc(var(--tilt-x, 0) * 16deg))
+        translate(calc(var(--tilt-x, 0) * 16px), calc(var(--tilt-y, 0) * 16px));
+      background-color: var(--color-primary);
+      color: var(--color-white);
+    }
 
-  html.dark .about-card:hover {
-    background-color: var(--color-primary);
+    html.dark .about-card:hover {
+      background-color: var(--color-primary);
+    }
+
+    .about-card:hover .about-card-title {
+      opacity: 0;
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .about-card:hover .about-card-detail {
+      max-height: 160px;
+      opacity: 1;
+      visibility: visible;
+      font-size: var(--font-size-base);
+      color: var(--color-white);
+    }
   }
 
   .about-card--s { grid-column: span 1; grid-row: span 1; }
@@ -229,12 +245,6 @@ import { interests } from '../../config/interests';
     transition: opacity var(--transition-base);
   }
 
-  .about-card:hover .about-card-title {
-    opacity: 0;
-    position: absolute;
-    pointer-events: none;
-  }
-
   .about-card-detail {
     margin: 0;
     font-size: var(--font-size-xs);
@@ -248,14 +258,6 @@ import { interests } from '../../config/interests';
     visibility: hidden;
     overflow: hidden;
     transition: max-height var(--transition-slow), opacity var(--transition-fast);
-  }
-
-  .about-card:hover .about-card-detail {
-    max-height: 160px;
-    opacity: 1;
-    visibility: visible;
-    font-size: var(--font-size-base);
-    color: var(--color-white);
   }
 
   /* 展开预览层：从卡片位置展开到居中 */

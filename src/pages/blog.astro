@@ -20,22 +20,12 @@ const pageTitle = "博客";
       <div class="filter-section">
         <h2 class="filter-title"><span class="lang-zh">标签</span><span class="lang-en">Tags</span></h2>
         <div class="tags-container" id="tags-container">
-          <button 
-            class="tag tag-filter active" 
-            data-tag="all"
-            data-filter="all"
-          >
+          <button class="tag tag-filter active" data-filter="all">
             <span class="lang-zh">全部</span>
             <span class="lang-en">All</span>
           </button>
           {allTags.map((tag) => (
-            <button 
-              class="tag tag-filter" 
-              data-tag={tag}
-              data-filter={tag}
-            >
-              {tag}
-            </button>
+            <button class="tag tag-filter" data-filter={tag}>{tag}</button>
           ))}
         </div>
       </div>
@@ -66,49 +56,32 @@ const pageTitle = "博客";
 </BaseLayout>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const filterButtons = document.querySelectorAll('.tag-filter');
-    const postWrappers = document.querySelectorAll('.blog-post-wrapper');
-    const noResults = document.getElementById('no-results');
+  const filterButtons = document.querySelectorAll<HTMLElement>('.tag-filter');
+  const postWrappers = document.querySelectorAll<HTMLElement>('.blog-post-wrapper');
+  const noResults = document.getElementById('no-results');
 
-    function filterPosts(selectedTag: string) {
-      let visibleCount = 0;
+  function filterPosts(selectedTag: string) {
+    let visibleCount = 0;
 
-      postWrappers.forEach((wrapper) => {
-        const element = wrapper as HTMLElement;
-        const tags = element.getAttribute('data-tags')?.split(',') || [];
-        
-        if (selectedTag === 'all' || tags.includes(selectedTag)) {
-          element.style.display = 'block';
-          visibleCount++;
-        } else {
-          element.style.display = 'none';
-        }
-      });
+    postWrappers.forEach((el) => {
+      const tags = el.getAttribute('data-tags')?.split(',') ?? [];
+      const visible = selectedTag === 'all' || tags.includes(selectedTag);
+      el.style.display = visible ? 'block' : 'none';
+      if (visible) visibleCount++;
+    });
 
-      // 显示/隐藏无结果提示
-      if (noResults) {
-        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-      }
-
-      // 更新按钮状态
-      filterButtons.forEach((button) => {
-        const element = button as HTMLElement;
-        if (element.getAttribute('data-filter') === selectedTag) {
-          element.classList.add('active');
-        } else {
-          element.classList.remove('active');
-        }
-      });
+    if (noResults) {
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
     }
 
-    // 为每个筛选按钮添加点击事件
-    filterButtons.forEach((button) => {
-      const element = button as HTMLElement;
-      element.addEventListener('click', () => {
-        const tag = element.getAttribute('data-filter') || 'all';
-        filterPosts(tag);
-      });
+    filterButtons.forEach((btn) => {
+      btn.classList.toggle('active', btn.getAttribute('data-filter') === selectedTag);
+    });
+  }
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterPosts(btn.getAttribute('data-filter') ?? 'all');
     });
   });
 </script>
