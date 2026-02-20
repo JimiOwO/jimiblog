@@ -12,13 +12,15 @@ const pageTitle = "博客";
 
 <BaseLayout pageTitle={pageTitle} pageTitleZh="博客" pageTitleEn="Blog">
   <div class="blog-container">
-    <header class="page-header blog-page-header">
-      <h1><span class="lang-zh">博客</span><span class="lang-en">Blog</span></h1>
+    <header class="blog-hero">
+      <h1 class="blog-hero-bio">
+        <span class="lang-zh">一些写下来了的想法</span>
+        <span class="lang-en">Thoughts I bothered to write down</span>
+      </h1>
     </header>
     <!-- 标签筛选器 -->
     <div class="blog-filters">
       <div class="filter-section">
-        <h2 class="filter-title"><span class="lang-zh">标签</span><span class="lang-en">Tags</span></h2>
         <div class="tags-container" id="tags-container">
           <button class="tag tag-filter active" data-filter="all">
             <span class="lang-zh">全部</span>
@@ -98,25 +100,23 @@ const pageTitle = "博客";
     margin: 0 auto;
   }
 
-  .blog-page-header {
-    margin-bottom: var(--spacing-xl);
+  .blog-hero {
+    margin-bottom: var(--spacing-3xl);
+  }
+
+  .blog-hero-bio {
+    margin: 0;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-black);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text);
   }
 
   .blog-filters {
     margin-bottom: var(--spacing-xl);
     padding-bottom: var(--spacing-lg);
     border-bottom: var(--border-width-thin) solid var(--color-border-light);
-  }
-
-  .filter-section {
-    margin-bottom: var(--spacing-md);
-  }
-
-  .filter-title {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text);
-    margin: 0 0 var(--spacing-md) 0;
   }
 
   .tags-container {

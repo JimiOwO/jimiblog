@@ -1,12 +1,10 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-const { frontmatter } = Astro.props;
+import type { PortfolioFrontmatter } from '../utils/portfolio';
+
+const { frontmatter } = Astro.props as { frontmatter: PortfolioFrontmatter };
 ---
-<BaseLayout
-  pageTitle={frontmatter.titleZh}
-  pageTitleZh={frontmatter.titleZh}
-  pageTitleEn={frontmatter.titleEn}
->
+<BaseLayout pageTitle={frontmatter.titleZh} pageTitleZh={frontmatter.titleZh} pageTitleEn={frontmatter.titleEn}>
   <article class="project-page">
     <a href="/portfolio" class="project-page-back">
       <span class="lang-zh">← 作品集</span>
@@ -19,13 +17,13 @@ const { frontmatter } = Astro.props;
         <span class="lang-en">{frontmatter.titleEn}</span>
       </h1>
       <ul class="project-page-tags" aria-label="技术栈">
-        {(frontmatter.tags ?? []).map((tag: string) => (
+        {frontmatter.tags.map((tag: string) => (
           <li class="project-page-tag">{tag}</li>
         ))}
       </ul>
     </header>
 
-    <div class="project-page-body">
+    <div class="project-page-content">
       <slot />
     </div>
 
@@ -40,12 +38,7 @@ const { frontmatter } = Astro.props;
           </a>
         )}
         {frontmatter.demo && (
-          <a
-            href={frontmatter.demo}
-            target={String(frontmatter.demo).startsWith('http') ? '_blank' : '_self'}
-            rel="noopener noreferrer"
-            class="project-page-link"
-          >
+          <a href={frontmatter.demo} target={frontmatter.demo.startsWith('http') ? '_blank' : '_self'} rel="noopener noreferrer" class="project-page-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
               <polyline points="15 3 21 3 21 9"/>
@@ -120,31 +113,31 @@ const { frontmatter } = Astro.props;
     color: var(--color-border);
   }
 
-  .project-page-body {
+  .project-page-content {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text);
     margin-bottom: var(--spacing-2xl);
     padding-bottom: 8lh;
   }
 
-  .project-page-body :global(p) {
+  .project-page-content :global(p) {
     margin-top: 0;
     margin-bottom: var(--spacing-lg);
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-relaxed);
-    color: var(--color-text);
   }
 
-  .project-page-body :global(h2) {
+  .project-page-content :global(h2) {
     margin-top: var(--spacing-2xl);
     margin-bottom: var(--spacing-md);
     padding-bottom: var(--spacing-xs);
     border-bottom: var(--border-width-thin) solid var(--color-border-light);
   }
 
-  .project-page-body :global(h3) {
+  .project-page-content :global(h3) {
     margin-top: var(--spacing-xl);
   }
 
-  .project-page-body :global(img) {
+  .project-page-content :global(img) {
     width: 100%;
     max-width: 100%;
     height: auto;

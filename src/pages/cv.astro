@@ -7,6 +7,12 @@ const pdfUrl = '/CV.pdf';
 
 <BaseLayout pageTitle={pageTitle} pageTitleZh="简历" pageTitleEn="CV">
   <div class="cv-container">
+    <header class="cv-hero">
+      <h1 class="cv-hero-bio">
+        <span class="lang-zh">我能做什么（雇主友好版）</span>
+        <span class="lang-en">What I can do, employer-friendly edition</span>
+      </h1>
+    </header>
     <a href={pdfUrl} target="_blank" rel="noopener noreferrer" class="cv-preview-link" title="在新标签页打开 PDF">
       <div class="cv-preview" id="pdf-container" data-pdf-url={pdfUrl}>
         <div class="cv-loading"><span class="lang-zh">正在加载简历…</span><span class="lang-en">Loading CV…</span></div>
@@ -79,8 +85,21 @@ const pdfUrl = '/CV.pdf';
 </script>
 
 <style>
+  .cv-hero {
+    margin-bottom: 0;
+  }
+
+  .cv-hero-bio {
+    margin: 0;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-black);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text);
+  }
+
   .cv-container {
-    margin: var(--spacing-xl) auto;
+    margin: 0 auto;
     max-width: 100%;
     overflow-x: hidden;
   }

@@ -1,22 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import type { ProjectEntry } from '../../utils/portfolio';
+import type { PortfolioEntry } from '../../utils/portfolio';
 
-const allProjects = Object.values(
-  import.meta.glob<ProjectEntry>('./*.md', { eager: true })
+const projects = Object.values(
+  import.meta.glob<PortfolioEntry>('./*.md', { eager: true })
 );
 ---
 <BaseLayout pageTitle="作品" pageTitleZh="作品" pageTitleEn="Portfolio">
   <div class="portfolio">
     <header class="portfolio-hero">
-      <p class="portfolio-hero-bio">
-        <span class="lang-zh">我做过的一些东西</span>
-        <span class="lang-en">Things I've built</span>
-      </p>
+      <h1 class="portfolio-hero-bio">
+        <span class="lang-zh">我做过的一些东西(和搞砸的)</span>
+        <span class="lang-en">Things I've built(and broken)</span>
+      </h1>
     </header>
 
     <div class="portfolio-grid">
-      {allProjects.map((project) => (
+      {projects.map((project) => (
         <article class="portfolio-card">
           <a href={project.url} class="portfolio-card-link" aria-label={project.frontmatter.titleZh + ' / ' + project.frontmatter.titleEn}></a>
           <div class="portfolio-card-body">
@@ -29,7 +29,7 @@ const allProjects = Object.values(
               <span class="lang-en">{project.frontmatter.descEn}</span>
             </p>
             <ul class="portfolio-tags" aria-label="技术栈">
-              {(project.frontmatter.tags ?? []).map((tag) => (
+              {project.frontmatter.tags.map((tag: string) => (
                 <li class="portfolio-tag">{tag}</li>
               ))}
             </ul>
@@ -44,12 +44,7 @@ const allProjects = Object.values(
               </a>
             )}
             {project.frontmatter.demo && (
-              <a
-                href={project.frontmatter.demo}
-                target={String(project.frontmatter.demo).startsWith('http') ? '_blank' : '_self'}
-                rel="noopener noreferrer"
-                class="portfolio-link"
-              >
+              <a href={project.frontmatter.demo} target={project.frontmatter.demo.startsWith('http') ? '_blank' : '_self'} rel="noopener noreferrer" class="portfolio-link">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                   <polyline points="15 3 21 3 21 9"/>
@@ -79,9 +74,11 @@ const allProjects = Object.values(
 
   .portfolio-hero-bio {
     margin: 0;
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-relaxed);
-    color: var(--color-text-secondary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-black);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text);
   }
 
   .portfolio-grid {

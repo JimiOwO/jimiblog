@@ -5,10 +5,10 @@ import { interests } from '../../config/interests';
 <BaseLayout pageTitle="关于" pageTitleZh="关于" pageTitleEn="About">
   <div class="about">
     <header class="about-hero">
-      <p class="about-hero-bio">
-        <span class="lang-zh">关于我的一些小事</span>
+      <h1 class="about-hero-bio">
+        <span class="lang-zh">我的成分：</span>
         <span class="lang-en">What am I made of?</span>
-      </p>
+      </h1>
     </header>
 
     <div class="about-backdrop" id="about-backdrop" aria-hidden="true"></div>
@@ -148,9 +148,11 @@ import { interests } from '../../config/interests';
 
   .about-hero-bio {
     margin: 0;
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-relaxed);
-    color: var(--color-text-secondary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-black);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text);
   }
 
   .about-backdrop {

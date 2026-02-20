@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 响应式：在较大屏幕上始终显示导航
   const mediaQuery = window.matchMedia('(min-width: 636px)');
 
   function handleMediaChange(e) {

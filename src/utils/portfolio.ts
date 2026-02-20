@@ -1,8 +1,8 @@
 /**
- * 作品集相关类型与工具，供 portfolio 页面复用
+ * Portfolio 项目相关类型，供 portfolio/index.astro 与 PortfolioProjectLayout 复用
  */
 
-export interface ProjectFrontmatter {
+export interface PortfolioFrontmatter {
   titleZh: string;
   titleEn: string;
   descZh: string;
@@ -13,7 +13,7 @@ export interface ProjectFrontmatter {
   [key: string]: unknown;
 }
 
-export interface ProjectEntry {
+export interface PortfolioEntry {
   url: string;
-  frontmatter: ProjectFrontmatter;
+  frontmatter: PortfolioFrontmatter;
 }

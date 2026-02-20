@@ -45,20 +45,25 @@ import { visitedPlaces } from '../config/visitedPlaces';
   var land = null;
   var borders = null;
 
-  // Mouse-driven rotation + idle auto-rotate
-  var ORIGIN_PHI  = -30;
-  var RANGE_X     = 240;   // degrees sweepable left↔right
-  var RANGE_Y     = 60;    // degrees sweepable up↔down
-  var IDLE_SPEED  = 0.08;  // degrees per frame during idle
-  var IDLE_TIMEOUT = 500; // ms of stillness before idle kicks in
-  var MOVE_THRESHOLD = 4;  // px of movement considered "significant"
+  // Mouse-driven rotation + inertia + idle auto-rotate
+  var ORIGIN_PHI    = -30;
+  var RANGE_X       = 240;   // degrees sweepable left↔right
+  var RANGE_Y       = 60;    // degrees sweepable up↔down
+  var IDLE_SPEED    = 0.08;  // degrees per frame during idle
+  var IDLE_TIMEOUT  = 300;   // ms of stillness before inertia kicks in
+  var MOVE_THRESHOLD = 4;    // px of movement considered "significant"
+  var INERTIA_DECAY  = 0.90; // velocity multiplier per frame
+  var INERTIA_MIN    = 0.005; // stop inertia below this speed (degrees/frame)
 
-  var activeLambdaBase = -110; // recalibrated on idle→active to avoid jumps
+  var activeLambdaBase = -110;
   var activePhibase    = ORIGIN_PHI;
   var targetLambda     = activeLambdaBase;
   var targetPhi        = ORIGIN_PHI;
 
-  var isIdle     = true;
+  // state: 'idle' | 'active' | 'inertia'
+  var state      = 'idle';
+  var velLambda  = 0;
+  var velPhi     = 0;
   var lastMoveX  = window.innerWidth  / 2;
   var lastMoveY  = window.innerHeight / 2;
   var lastMoveAt = 0;
@@ -76,15 +81,22 @@ import { visitedPlaces } from '../config/visitedPlaces';
     var relX = (e.clientX / window.innerWidth  - 0.5) * RANGE_X;
     var relY = (e.clientY / window.innerHeight - 0.5) * RANGE_Y;
 
-    if (isIdle) {
+    if (state !== 'active') {
       // Recalibrate bases so targetLambda == current rotation → no jump
       activeLambdaBase = rotation[0] - relX;
       activePhibase    = rotation[1] + relY;
-      isIdle = false;
+      state = 'active';
     }
 
-    targetLambda = activeLambdaBase + relX;
-    targetPhi    = activePhibase    - relY;
+    var newLambda = activeLambdaBase + relX;
+    var newPhi    = activePhibase    - relY;
+
+    // Track velocity with light smoothing
+    velLambda = velLambda * 0.4 + (newLambda - targetLambda) * 0.6;
+    velPhi    = velPhi    * 0.4 + (newPhi    - targetPhi)    * 0.6;
+
+    targetLambda = newLambda;
+    targetPhi    = newPhi;
   });
 
   function isDark() {
@@ -134,7 +146,10 @@ import { visitedPlaces } from '../config/visitedPlaces';
     ctx.stroke();
 
     // Visited place dots
-    var dotColor = dark ? '#c64844' : '#a43632';
+    var style = getComputedStyle(document.documentElement);
+    var dotColor = dark
+      ? style.getPropertyValue('--color-primary-light').trim()
+      : style.getPropertyValue('--color-primary').trim();
     placesData.forEach(function (place) {
       var projected = projection(place.coords);
       if (!projected) return;
@@ -150,11 +165,23 @@ import { visitedPlaces } from '../config/visitedPlaces';
   }
 
   function animate() {
-    if (!isIdle && Date.now() - lastMoveAt > IDLE_TIMEOUT) {
-      isIdle = true;
+    if (state === 'active' && Date.now() - lastMoveAt > IDLE_TIMEOUT) {
+      state = 'inertia';
     }
 
-    if (isIdle) {
+    if (state === 'inertia') {
+      targetLambda += velLambda;
+      targetPhi    += velPhi;
+      velLambda    *= INERTIA_DECAY;
+      velPhi       *= INERTIA_DECAY;
+      if (Math.abs(velLambda) < INERTIA_MIN && Math.abs(velPhi) < INERTIA_MIN) {
+        velLambda = 0;
+        velPhi    = 0;
+        state     = 'idle';
+      }
+    }
+
+    if (state === 'idle') {
       targetLambda += IDLE_SPEED;
       targetPhi    += (ORIGIN_PHI - targetPhi) * 0.02; // gently return to default tilt
     }
