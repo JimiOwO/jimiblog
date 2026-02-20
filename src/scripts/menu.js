@@ -31,4 +31,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   mediaQuery.addEventListener('change', handleMediaChange);
   handleMediaChange(mediaQuery);
+
+  // 手机端：下滑隐藏顶栏，上滑显示顶栏
+  const headerEl = document.querySelector('.header-isolate');
+  if (headerEl) {
+    let lastScrollY = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+      if (window.innerWidth > 635) return;
+
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 52) {
+        // 向下滑：隐藏顶栏并关闭下拉菜单
+        headerEl.classList.add('header-hidden');
+        navLinks.style.display = 'none';
+        menu.setAttribute('aria-expanded', 'false');
+      } else {
+        // 向上滑：显示顶栏
+        headerEl.classList.remove('header-hidden');
+      }
+
+      lastScrollY = currentScrollY;
+    }, { passive: true });
+  }
 });

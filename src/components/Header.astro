@@ -81,6 +81,11 @@ const { currentPath = '/' } = Astro.props;
       right: 0;
       z-index: var(--z-fixed);
       background-color: var(--color-primary);
+      transition: transform 0.3s ease;
+    }
+
+    .header-isolate.header-hidden {
+      transform: translateY(-100%);
     }
 
     .header-nav {
