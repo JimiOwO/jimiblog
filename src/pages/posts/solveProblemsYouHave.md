@@ -5,7 +5,7 @@ description: Not the ones you will have.
 pubDate: 2026-02-19
 tags: ["English","Tech"]
 ---
-
+![Wire Pole](/images/wirepole.jpg)
 A big problem for me when it comes to programming is to overdesign. I caught myself worrying about future features, hoping to solve problems that haven't even occurred yet.
 
 Say you're building a website (like this one). You've got the design, the content, and the functionality. But you're worried — what if I want to migrate to a new platform? What if I want to add a new feature? What if I want to change the design? I'd admit this is a valid concern to a certain extent, but it's also a waste of time.
