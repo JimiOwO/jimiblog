@@ -213,6 +213,43 @@ html.dark .nav-links a:hover {
   }
 }
 
+/* 手机端导航下拉面板 */
+@media screen and (max-width: 635px) {
+  .nav-links {
+    position: fixed;
+    top: 52px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: calc(var(--z-fixed) - 1);
+    background-color: var(--color-primary-dark);
+    flex-direction: column;
+    gap: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .nav-links a {
+    color: var(--color-white);
+    text-align: center;
+    padding: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: var(--border-width-thin) solid rgba(255, 255, 255, 0.15);
+  }
+
+  .nav-links a:hover,
+  html.dark .nav-links a:hover {
+    color: var(--color-white);
+    background-color: rgba(0, 0, 0, 0.2);
+    border-bottom: var(--border-width-thin) solid rgba(255, 255, 255, 0.15);
+  }
+
+  .nav-links .nav-link.active {
+    color: var(--color-white) !important;
+    background-color: rgba(0, 0, 0, 0.25);
+    font-weight: var(--font-weight-black);
+  }
+}
+
 /* 顶部装饰线 - Top Decorative Line */
 .top-line {
   height: 6px;

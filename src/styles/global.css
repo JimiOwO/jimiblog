@@ -28,6 +28,17 @@ body {
   background-color: var(--color-bg);
 }
 
+/* 手机端：固定顶部栏高度补偿，隐藏装饰线 */
+@media screen and (max-width: 635px) {
+  body {
+    padding-top: 52px;
+  }
+
+  .top-line {
+    display: none;
+  }
+}
+
 /* 基础链接样式 */
 a {
   color: var(--color-link);

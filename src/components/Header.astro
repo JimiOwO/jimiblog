@@ -12,13 +12,15 @@ const { currentPath = '/' } = Astro.props;
     <div class="header-nav-left">
       <ThemeIcon />
       <LangToggle />
-      <Menu />
     </div>
     <a href="/" class="header-logo" aria-label="首页">
       <img src="/icons/Jimi_dark.png" alt="" class="logo-img logo-light" />
       <img src="/icons/Jimi_light.png" alt="" class="logo-img logo-dark" />
     </a>
-    <Navigation currentPath={currentPath} />
+    <div class="header-nav-right">
+      <Menu />
+      <Navigation currentPath={currentPath} />
+    </div>
   </nav>
 </header>
 
@@ -34,12 +36,12 @@ const { currentPath = '/' } = Astro.props;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
     gap: var(--spacing-md);
     position: relative;
   }
 
-  .header-nav-left {
+  .header-nav-left,
+  .header-nav-right {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
@@ -70,21 +72,53 @@ const { currentPath = '/' } = Astro.props;
     display: block;
   }
 
+  /* ── 手机端：固定红色顶部栏 ── */
   @media screen and (max-width: 635px) {
+    .header-isolate {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: var(--z-fixed);
+      background-color: var(--color-primary);
+    }
+
     .header-nav {
-      flex-direction: column;
-      align-items: stretch;
+      max-width: 100%;
+      margin: 0;
+      padding: 0 var(--spacing-md);
+      height: 52px;
     }
 
-    .header-nav-left {
-      justify-content: space-between;
+    /* 红底上始终显示浅色 logo */
+    .header-logo .logo-light {
+      display: none !important;
+    }
+    .header-logo .logo-dark {
+      display: block !important;
     }
 
-    .header-logo {
-      position: static;
-      transform: none;
-      padding: var(--spacing-xl) 0;
-      align-self: center;
+    .header-logo .logo-img {
+      height: 2.25rem;
+    }
+
+    /* 图标变白 */
+    .header-nav-left :global(.theme-toggle),
+    .header-nav-left :global(.lang-toggle) {
+      color: var(--color-white);
+    }
+
+    .header-nav-left :global(.theme-toggle:hover),
+    .header-nav-left :global(.lang-toggle:hover) {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .header-nav-right :global(.menu) {
+      color: var(--color-white);
+    }
+
+    .header-nav-right :global(.menu:hover) {
+      color: rgba(255, 255, 255, 0.7);
     }
   }
 </style>
