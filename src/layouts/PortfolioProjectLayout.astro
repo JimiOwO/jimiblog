@@ -148,6 +148,24 @@ const { frontmatter } = Astro.props as { frontmatter: PortfolioFrontmatter };
     box-shadow: var(--shadow-sm);
   }
 
+  .project-page-content :global(.project-download-btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    transition: opacity var(--transition-base);
+  }
+
+  .project-page-content :global(.project-download-btn:hover) {
+    opacity: 0.9;
+  }
+
   .project-page-footer {
     display: flex;
     gap: var(--spacing-lg);
