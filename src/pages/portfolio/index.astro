@@ -2,9 +2,25 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import type { PortfolioEntry } from '../../utils/portfolio';
 
-const projects = Object.values(
+// 作品展示顺序：按此数组从左到右、从上到下排列，未列出的会排在最后
+const portfolioOrder = ['personal-blog','death-stranding-cursor'];
+
+const rawProjects = Object.values(
   import.meta.glob<PortfolioEntry>('./*.md', { eager: true })
 );
+
+function getSlug(entry: PortfolioEntry): string {
+  return entry.url.replace(/\/$/, '').split('/').pop() ?? '';
+}
+
+const projects = [...rawProjects].sort((a, b) => {
+  const i = portfolioOrder.indexOf(getSlug(a));
+  const j = portfolioOrder.indexOf(getSlug(b));
+  if (i === -1 && j === -1) return 0;
+  if (i === -1) return 1;
+  if (j === -1) return -1;
+  return i - j;
+});
 ---
 <BaseLayout pageTitle="作品" pageTitleZh="作品" pageTitleEn="Portfolio">
   <div class="portfolio">
@@ -95,6 +111,7 @@ const projects = Object.values(
     width: 100%;
     background-color: var(--color-gray-300);
     overflow: hidden;
+    pointer-events: none;
   }
 
   html.dark .portfolio-card-preview {

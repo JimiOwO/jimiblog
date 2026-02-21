@@ -16,11 +16,13 @@ const { frontmatter } = Astro.props as { frontmatter: PortfolioFrontmatter };
         <span class="lang-zh">{frontmatter.titleZh}</span>
         <span class="lang-en">{frontmatter.titleEn}</span>
       </h1>
-      <ul class="project-page-tags" aria-label="技术栈">
-        {frontmatter.tags.map((tag: string) => (
-          <li class="project-page-tag">{tag}</li>
-        ))}
-      </ul>
+      {(frontmatter.tags?.length ?? 0) > 0 && (
+        <ul class="project-page-tags" aria-label="技术栈">
+          {(frontmatter.tags ?? []).map((tag: string) => (
+            <li class="project-page-tag">{tag}</li>
+          ))}
+        </ul>
+      )}
     </header>
 
     <div class="project-page-content">

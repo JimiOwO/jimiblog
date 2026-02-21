@@ -7,7 +7,7 @@ export interface PortfolioFrontmatter {
   titleEn: string;
   descZh: string;
   descEn: string;
-  tags: string[];
+  tags?: string[];
   /** 卡片预览图 URL，如 /portfolio/xxx/preview.jpg */
   preview?: string;
   github?: string;
