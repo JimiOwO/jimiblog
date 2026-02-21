@@ -8,6 +8,8 @@ export interface PortfolioFrontmatter {
   descZh: string;
   descEn: string;
   tags: string[];
+  /** 卡片预览图 URL，如 /portfolio/xxx/preview.jpg */
+  preview?: string;
   github?: string;
   demo?: string;
   [key: string]: unknown;

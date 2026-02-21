@@ -5,8 +5,7 @@ titleEn: Personal Blog
 descZh: 你正在看的这个网站。基于 Astro 构建，支持深色模式与中英双语切换，包含交互式地球仪和卡片动效。
 descEn: The site you're on right now. Built with Astro, featuring dark mode, bilingual support, an interactive globe, and animated cards.
 tags: [Astro, TypeScript, CSS]
-github: https://github.com
-demo: /
+preview: /portfolio/personal-blog/Jimi_light.png
 ---
 
 使用 Astro 静态站点生成器构建，CSS 变量设计系统统一视觉风格。

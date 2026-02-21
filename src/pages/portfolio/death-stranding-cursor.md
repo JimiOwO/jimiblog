@@ -5,6 +5,7 @@ titleEn: Death Stranding Style Cursor
 descZh: 受《死亡搁浅》视觉风格启发的 Windows 自定义光标主题，15 种光标状态，Ultra-HD 256×256 分辨率，包含 Python 展示图生成器。
 descEn: A Windows custom cursor theme inspired by Death Stranding's visual style. 15 cursor states, Ultra-HD 256×256 resolution, with a Python showcase generator.
 tags: [Python, Windows, Cursor Theme, Pillow]
+preview: /portfolio/death-stranding-cursor/showcase.jpg
 ---
 
 ![Death Stranding 光标展示](/portfolio/death-stranding-cursor/showcase.jpg)
