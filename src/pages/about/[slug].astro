@@ -17,7 +17,7 @@ if (!item) return Astro.redirect('/about');
       <span class="lang-en">←Back</span>
     </a>
     <header class="interest-page-header">
-      <h1 class="interest-page-title">
+      <h1 class="interest-page-title bilingual-title">
         <span class="lang-zh">{item.tag}</span>
         <span class="lang-en">{item.tagEn}</span>
       </h1>
@@ -62,7 +62,7 @@ if (!item) return Astro.redirect('/about');
 
   .interest-page-title {
     margin: 0;
-    font-size: var(--font-size-3xl);
+    font-size: clamp(1.9rem, 4.5vw, var(--font-size-page-title));
     font-weight: var(--font-weight-black);
     color: var(--color-text);
     border-left: var(--border-width-decorative) solid var(--color-primary);

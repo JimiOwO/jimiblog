@@ -63,6 +63,9 @@
   --font-size-2xl: 2rem;        /* 32px */
   --font-size-3xl: 3.2rem;      /* 51.2px */
   --font-size-4xl: 4rem;        /* 64px */
+
+  /* 页面/版面主标题 - Page/Panel Titles */
+  --font-size-page-title: 2.6rem;
   
   --font-weight-normal: 400;
   --font-weight-medium: 500;

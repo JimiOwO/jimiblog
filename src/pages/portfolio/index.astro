@@ -25,7 +25,7 @@ const projects = [...rawProjects].sort((a, b) => {
 <BaseLayout pageTitle="作品" pageTitleZh="作品" pageTitleEn="Portfolio">
   <div class="portfolio">
     <header class="portfolio-hero">
-      <h1 class="portfolio-hero-bio">
+      <h1 class="portfolio-hero-bio bilingual-title">
         <span class="lang-zh">我做过的一些东西(和搞砸的)</span>
         <span class="lang-en">Things I've built(and broken)</span>
       </h1>
@@ -73,7 +73,7 @@ const projects = [...rawProjects].sort((a, b) => {
 
   .portfolio-hero-bio {
     margin: 0;
-    font-size: var(--font-size-3xl);
+    font-size: clamp(1.9rem, 4.5vw, var(--font-size-page-title));
     font-weight: var(--font-weight-black);
     line-height: var(--line-height-tight);
     letter-spacing: var(--letter-spacing-tight);

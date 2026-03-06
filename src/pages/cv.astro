@@ -8,9 +8,9 @@ const pdfUrl = '/CV.pdf';
 <BaseLayout pageTitle={pageTitle} pageTitleZh="简历" pageTitleEn="CV">
   <div class="cv-container">
     <header class="cv-hero">
-      <h1 class="cv-hero-bio">
-        <span class="lang-zh">我能做什么（雇主友好版）</span>
-        <span class="lang-en">What I can do, employer-friendly edition</span>
+      <h1 class="cv-hero-bio bilingual-title">
+        <span class="lang-zh">我能做什么/正在做什么/将要做什么</span>
+        <span class="lang-en">What I have done<br>am doing<br>will do.</span>
       </h1>
     </header>
     <a href={pdfUrl} target="_blank" rel="noopener noreferrer" class="cv-preview-link" title="在新标签页打开 PDF">
@@ -91,7 +91,7 @@ const pdfUrl = '/CV.pdf';
 
   .cv-hero-bio {
     margin: 0;
-    font-size: var(--font-size-3xl);
+    font-size: clamp(1.9rem, 4.5vw, var(--font-size-page-title));
     font-weight: var(--font-weight-black);
     line-height: var(--line-height-tight);
     letter-spacing: var(--letter-spacing-tight);

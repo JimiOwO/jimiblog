@@ -13,9 +13,9 @@ const pageTitle = "博客";
 <BaseLayout pageTitle={pageTitle} pageTitleZh="博客" pageTitleEn="Blog">
   <div class="blog-container">
     <header class="blog-hero">
-      <h1 class="blog-hero-bio">
+      <h1 class="blog-hero-bio bilingual-title">
         <span class="lang-zh">记录想法，语言不限。</span>
-        <span class="lang-en">Some thoughts. Please use tranlation software if you don't understand :D</span>
+        <span class="lang-en">Some thoughts,<br>in their original languages.</span>
       </h1>
     </header>
     <!-- 标签筛选器 -->
@@ -106,7 +106,7 @@ const pageTitle = "博客";
 
   .blog-hero-bio {
     margin: 0;
-    font-size: var(--font-size-3xl);
+    font-size: clamp(1.9rem, 4.5vw, var(--font-size-page-title));
     font-weight: var(--font-weight-black);
     line-height: var(--line-height-tight);
     letter-spacing: var(--letter-spacing-tight);

@@ -12,7 +12,7 @@ const { frontmatter } = Astro.props as { frontmatter: PortfolioFrontmatter };
     </a>
 
     <header class="project-page-header">
-      <h1 class="project-page-title">
+      <h1 class="project-page-title bilingual-title">
         <span class="lang-zh">{frontmatter.titleZh}</span>
         <span class="lang-en">{frontmatter.titleEn}</span>
       </h1>
@@ -83,7 +83,7 @@ const { frontmatter } = Astro.props as { frontmatter: PortfolioFrontmatter };
 
   .project-page-title {
     margin: 0 0 var(--spacing-md);
-    font-size: clamp(1.75rem, 5vw, var(--font-size-4xl));
+    font-size: clamp(1.9rem, 4.5vw, var(--font-size-page-title));
     font-weight: var(--font-weight-black);
     color: var(--color-text);
     line-height: var(--line-height-tight);

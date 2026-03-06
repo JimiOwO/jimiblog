@@ -55,7 +55,7 @@ a:hover {
 /* 标题样式 */
 h1 {
   margin: var(--spacing-2xl) 0 var(--spacing-lg) 0;
-  font-size: var(--font-size-3xl);
+  font-size: clamp(1.9rem, 4.5vw, var(--font-size-page-title));
   font-weight: var(--font-weight-black);
   text-transform: uppercase;
   letter-spacing: var(--letter-spacing-tight);
@@ -136,6 +136,12 @@ html.lang-en .lang-zh {
 }
 html:not(.lang-en) .lang-en {
   display: none !important;
+}
+
+/* 双语标题：中文通常视觉更“显大”，这里做轻微缩放与字距修正 */
+.bilingual-title .lang-zh {
+  font-size: 0.92em;
+  letter-spacing: 0;
 }
 
 /* 首页一屏布局：整页（顶栏 + 主内容 + 发行信息）不滚动即可看完 */

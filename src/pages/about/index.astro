@@ -5,7 +5,7 @@ import { interests } from '../../config/interests';
 <BaseLayout pageTitle="关于" pageTitleZh="关于" pageTitleEn="About">
   <div class="about">
     <header class="about-hero">
-      <h1 class="about-hero-bio">
+      <h1 class="about-hero-bio bilingual-title">
         <span class="lang-zh">我的成分：</span>
         <span class="lang-en">What am I made of?</span>
       </h1>
@@ -41,7 +41,7 @@ import { interests } from '../../config/interests';
       <div class="about-panel-inner">
         <button type="button" class="about-panel-close" id="about-panel-close" data-aria-label-zh="关闭" data-aria-label-en="Close" aria-label="关闭">×</button>
         <header class="about-panel-header">
-          <h1 class="about-panel-title" id="about-panel-heading">
+          <h1 class="about-panel-title bilingual-title" id="about-panel-heading">
             <span class="lang-zh" id="about-panel-title-zh"></span>
             <span class="lang-en" id="about-panel-title-en"></span>
           </h1>
@@ -148,7 +148,7 @@ import { interests } from '../../config/interests';
 
   .about-hero-bio {
     margin: 0;
-    font-size: var(--font-size-3xl);
+    font-size: clamp(1.9rem, 4.5vw, var(--font-size-page-title));
     font-weight: var(--font-weight-black);
     line-height: var(--line-height-tight);
     letter-spacing: var(--letter-spacing-tight);
