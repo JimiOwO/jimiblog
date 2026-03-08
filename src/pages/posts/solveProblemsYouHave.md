@@ -16,6 +16,4 @@ I think this is a common problem for many people — not just me, not just progr
 
 I used to call it "getting prepared" or "forward-thinking". Now I found a better term: perfectionism's delusion. Being too idealistic about the future and ignorant about the present is dangerous.
 
-There's a Chinese saying: "千里之行，始于足下" — the journey of a thousand miles begins with a single step.
-
-Chill, brother. Let the future take care of itself.
+There's a Chinese saying: "千里之行，始于足下" — the journey of a thousand miles begins with a single step. Focus on this single step, and let the future take care of itself.
