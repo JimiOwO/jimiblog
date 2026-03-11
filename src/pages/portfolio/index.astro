@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import type { PortfolioEntry } from '../../utils/portfolio';
 
 // 作品展示顺序：按此数组从左到右、从上到下排列，未列出的会排在最后
-const portfolioOrder = ['personal-blog','death-stranding-cursor'];
+const portfolioOrder = ['personal-blog','death-stranding-cursor','video-clips'];
 
 const rawProjects = Object.values(
   import.meta.glob<PortfolioEntry>('./*.md', { eager: true })
