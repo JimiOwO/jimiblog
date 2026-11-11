@@ -1,15 +1,25 @@
 ---
+import { formatDate } from '../utils/posts';
+
+interface Props {
+  url: string;
+  title: string;
+  tags?: string[];
+  pubDate?: Date | string;
+}
+
 const { url, title, tags = [], pubDate } = Astro.props;
-const dateStr = pubDate ? new Date(pubDate).toISOString().slice(0, 10) : '';
+const dateStr = formatDate(pubDate);
+// 根元素上的 data-tags 供博客页的标签筛选脚本使用
 ---
 
-<li class="blog-post-item">
+<li class="blog-post-item" data-tags={tags.join(',')}>
   <a href={url} class="blog-post-link">{title}</a>
   <div class="blog-post-meta">
-    {dateStr && <span class="blog-post-date">{dateStr}</span>}
-    {tags && tags.length > 0 && (
+    {dateStr && <time class="blog-post-date" datetime={dateStr}>{dateStr}</time>}
+    {tags.length > 0 && (
       <div class="blog-post-tags">
-        {tags.map((tag: string) => (
+        {tags.map((tag) => (
           <span class="tag tag-small">{tag}</span>
         ))}
       </div>
@@ -19,6 +29,8 @@ const dateStr = pubDate ? new Date(pubDate).toISOString().slice(0, 10) : '';
 
 <style>
   .blog-post-item {
+    list-style: none;
+    margin-bottom: var(--spacing-lg);
     padding: var(--spacing-md);
     border-bottom: var(--border-width-thin) solid var(--color-border-light);
     transition: background-color var(--transition-base);

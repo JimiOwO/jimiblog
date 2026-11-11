@@ -1,32 +1,61 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { SITE_NAME } from '../config/site';
 import '../styles/global.css';
 
-const { pageTitle, pageTitleZh = pageTitle, pageTitleEn = pageTitle, fullHeightLayout = false } = Astro.props;
+interface Props {
+  pageTitle: string;
+  pageTitleZh?: string;
+  pageTitleEn?: string;
+  /** 页面摘要，用于 <meta name="description"> 与分享卡片 */
+  description?: string;
+}
+
+const { pageTitle, pageTitleZh = pageTitle, pageTitleEn = pageTitle, description } = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const fullTitleZh = `${pageTitleZh} | ${SITE_NAME}`;
+const fullTitleEn = `${pageTitleEn} | ${SITE_NAME}`;
 ---
 
-<html lang="zh" data-page-title-zh={pageTitleZh} data-page-title-en={pageTitleEn}>
+<!doctype html>
+<html lang="zh" data-page-title-zh={fullTitleZh} data-page-title-en={fullTitleEn}>
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="/icons/Jimi_dark.png" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>{pageTitleZh} | Pengui.dev</title>
+    <link rel="icon" type="image/png" href="/icons/Jimi_dark.png" />
+    <title>{fullTitleZh}</title>
+    {description && <meta name="description" content={description} />}
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={pageTitleZh} />
+    {description && <meta property="og:description" content={description} />}
+    <!-- 首屏渲染前就确定语言与主题，避免闪烁；之后的切换逻辑在 LangToggle 和 ThemeIcon 组件里 -->
     <script is:inline>
-      (function(){var l=localStorage.getItem('lang');var next=(l==='en')?'en':'zh';document.documentElement.lang=next;document.documentElement.classList.toggle('lang-en',next==='en');document.documentElement.classList.toggle('lang-zh',next==='zh');var t=document.documentElement.getAttribute(next==='en'?'data-page-title-en':'data-page-title-zh');if(t)document.title=t+' | Pengui.dev';})();
-    </script>
-    <!-- 首屏即根据系统/本地偏好设置主题，避免闪烁 -->
-    <script is:inline>
-      (function(){
-        var saved=localStorage.getItem('theme');
-        var dark=saved==='dark'||(saved!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.classList.toggle('dark',dark);
+      (function () {
+        var root = document.documentElement;
+        var lang = 'zh';
+        var manualTheme = null;
+        try {
+          if (localStorage.getItem('lang') === 'en') lang = 'en';
+          // 只有用户手动切换过主题才使用保存值，否则始终跟随系统
+          if (localStorage.getItem('themeSource') === 'manual') manualTheme = localStorage.getItem('theme');
+        } catch (e) {}
+
+        root.lang = lang;
+        root.classList.toggle('lang-en', lang === 'en');
+        root.classList.toggle('lang-zh', lang === 'zh');
+        var title = root.getAttribute('data-page-title-' + lang);
+        if (title) document.title = title;
+
+        var dark = manualTheme
+          ? manualTheme === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.classList.toggle('dark', dark);
       })();
     </script>
   </head>
-  <body class:list={[fullHeightLayout && 'layout-landing']}>
+  <body>
     <div class="top-line"></div>
 
     <Header currentPath={currentPath} />
@@ -36,24 +65,5 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     </main>
 
     <Footer />
-
-    <script>
-      import "../scripts/menu.js"
-    </script>
-    <script is:inline>
-      (function () {
-        var lang = document.documentElement.lang || 'zh';
-        var key = lang === 'en' ? 'data-title-en' : 'data-title-zh';
-        document.querySelectorAll('a[data-title-zh]').forEach(function (a) {
-          var t = a.getAttribute(key);
-          if (t) a.setAttribute('title', t);
-        });
-        document.querySelectorAll('[data-aria-label-zh]').forEach(function (el) {
-          var k = lang === 'en' ? 'data-aria-label-en' : 'data-aria-label-zh';
-          var t = el.getAttribute(k);
-          if (t) el.setAttribute('aria-label', t);
-        });
-      })();
-    </script>
   </body>
 </html>

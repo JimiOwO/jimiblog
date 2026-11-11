@@ -102,34 +102,6 @@ img {
   display: block;
 }
 
-/* 菜单按钮：仅过渡颜色与边框，不触发布局变化 */
-.menu {
-  border: var(--border-width-thick) solid var(--color-text);
-  background-color: transparent;
-  border-radius: var(--border-radius-none);
-  padding: var(--spacing-sm) var(--spacing-md);
-  cursor: pointer;
-  font-weight: var(--font-weight-black);
-  text-transform: uppercase;
-  font-family: var(--font-family-base);
-  transition: color var(--transition-base), border-color var(--transition-base);
-}
-
-.menu:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-html.dark .menu {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-html.dark .menu:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
 /* 多语言：根据 html.lang 显示对应文案 */
 html.lang-en .lang-zh {
   display: none !important;
@@ -144,24 +116,17 @@ html:not(.lang-en) .lang-en {
   letter-spacing: 0;
 }
 
-/* 首页一屏布局：整页（顶栏 + 主内容 + 发行信息）不滚动即可看完 */
-body.layout-landing {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+/* 尊重系统的“减少动态效果”设置：关闭平滑滚动，动画与过渡直接跳到结束状态 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 
-body.layout-landing .main-content {
-  flex: 1 1 0;
-  min-height: 0;
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
-  display: flex;
-  flex-direction: column;
-}
-
-body.layout-landing .footer {
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-md);
-  flex-shrink: 0;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,16 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BlogPost from '../components/BlogPost.astro';
-import { type PostEntry, sortPostsByDate } from '../utils/posts';
+import { getAllPosts, getAllTags, getPostTags } from '../utils/posts';
 
-const allPosts = sortPostsByDate(
-  Object.values(import.meta.glob<PostEntry>('./posts/*.md', { eager: true })) as PostEntry[]
-);
-const allTags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())].sort();
-const pageTitle = "博客";
+const allPosts = getAllPosts();
+const allTags = getAllTags(allPosts);
 ---
 
-<BaseLayout pageTitle={pageTitle} pageTitleZh="博客" pageTitleEn="Blog">
+<BaseLayout pageTitle="博客" pageTitleZh="博客" pageTitleEn="Blog">
   <div class="blog-container">
     <header class="blog-hero">
       <h1 class="blog-hero-bio bilingual-title">
@@ -22,76 +19,76 @@ const pageTitle = "博客";
     <div class="blog-filters">
       <div class="filter-section">
         <div class="tags-container" id="tags-container">
-          <button class="tag tag-filter active" data-filter="all">
+          <button type="button" class="tag tag-filter active" data-filter="all" aria-pressed="true">
             <span class="lang-zh">全部</span>
             <span class="lang-en">All</span>
           </button>
           {allTags.map((tag) => (
-            <button class="tag tag-filter" data-filter={tag}>{tag}</button>
+            <button type="button" class="tag tag-filter" data-filter={tag} aria-pressed="false">{tag}</button>
           ))}
         </div>
       </div>
     </div>
 
     <!-- 博客文章列表 -->
-    <div class="blog-posts" id="blog-posts">
+    <ul class="blog-posts" id="blog-posts">
       {allPosts.map((post) => (
-        <div 
-          class="blog-post-wrapper" 
-          data-tags={post.frontmatter.tags.join(',')}
-        >
-          <BlogPost 
-            url={post.url} 
-            title={post.frontmatter.title}
-            tags={post.frontmatter.tags}
-            pubDate={post.frontmatter.pubDate}
-          />
-        </div>
+        <BlogPost
+          url={post.url}
+          title={post.frontmatter.title}
+          tags={getPostTags(post)}
+          pubDate={post.frontmatter.pubDate}
+        />
       ))}
-    </div>
+    </ul>
 
     <!-- 无结果提示 -->
-    <div class="no-results" id="no-results" style="display: none;">
+    <div class="no-results" id="no-results" hidden>
       <p><span class="lang-zh">没有找到匹配标签的文章。</span><span class="lang-en">No posts match this tag.</span></p>
     </div>
   </div>
 </BaseLayout>
 
 <script>
-  const filterButtons = document.querySelectorAll<HTMLElement>('.tag-filter');
-  const postWrappers = document.querySelectorAll<HTMLElement>('.blog-post-wrapper');
+  const ALL = 'all';
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>('.tag-filter');
+  const posts = document.querySelectorAll<HTMLElement>('#blog-posts > .blog-post-item');
   const noResults = document.getElementById('no-results');
 
   function filterPosts(selectedTag: string) {
     let visibleCount = 0;
 
-    postWrappers.forEach((el) => {
-      const tags = el.getAttribute('data-tags')?.split(',') ?? [];
-      const visible = selectedTag === 'all' || tags.includes(selectedTag);
-      el.style.display = visible ? 'block' : 'none';
+    posts.forEach((post) => {
+      const tags = (post.dataset.tags ?? '').split(',');
+      const visible = selectedTag === ALL || tags.includes(selectedTag);
+      post.hidden = !visible;
       if (visible) visibleCount++;
     });
 
-    if (noResults) {
-      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-    }
+    if (noResults) noResults.hidden = visibleCount > 0;
 
     filterButtons.forEach((btn) => {
-      btn.classList.toggle('active', btn.getAttribute('data-filter') === selectedTag);
+      const active = btn.dataset.filter === selectedTag;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', String(active));
     });
   }
 
   filterButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
-      filterPosts(btn.getAttribute('data-filter') ?? 'all');
+      const tag = btn.dataset.filter ?? ALL;
+      filterPosts(tag);
+      // 把当前筛选写回地址栏，方便刷新或分享链接后保持同一筛选
+      const url = new URL(window.location.href);
+      if (tag === ALL) url.searchParams.delete('tag');
+      else url.searchParams.set('tag', tag);
+      history.replaceState(null, '', url);
     });
   });
 
   // 页面加载时读取 URL 的 ?tag= 参数并自动激活对应标签
   const urlTag = new URLSearchParams(window.location.search).get('tag');
-  if (urlTag) {
-    filterPosts(urlTag);
-  }
+  if (urlTag) filterPosts(urlTag);
 </script>
 
 <style>
@@ -151,12 +148,8 @@ const pageTitle = "博客";
 
   .blog-posts {
     list-style: none;
+    margin: 0;
     padding: 0;
-  }
-
-  .blog-post-wrapper {
-    margin-bottom: var(--spacing-md);
-    transition: opacity var(--transition-base);
   }
 
   .no-results {

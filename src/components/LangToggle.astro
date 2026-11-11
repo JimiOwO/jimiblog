@@ -6,32 +6,39 @@
   </span>
 </button>
 
-<script is:inline>
-  (function initLang() {
-    var stored = localStorage.getItem('lang');
-    var lang = (stored === 'en' || stored === 'zh') ? stored : 'zh';
-    document.documentElement.lang = lang;
-    document.documentElement.classList.toggle('lang-en', lang === 'en');
-    document.documentElement.classList.toggle('lang-zh', lang === 'zh');
-  })();
+<script>
+  // 初始语言已由 BaseLayout <head> 里的内联脚本确定（防闪烁），这里负责同步文案与处理切换
+  type Lang = 'zh' | 'en';
 
-  document.getElementById('langToggle')?.addEventListener('click', function () {
-    var html = document.documentElement;
-    var next = html.lang === 'zh' ? 'en' : 'zh';
-    html.lang = next;
-    html.classList.toggle('lang-en', next === 'en');
-    html.classList.toggle('lang-zh', next === 'zh');
-    localStorage.setItem('lang', next);
-    var title = html.getAttribute(next === 'en' ? 'data-page-title-en' : 'data-page-title-zh');
-    if (title) document.title = title + ' | Pengui.dev';
-    document.querySelectorAll('a[data-title-zh]').forEach(function (a) {
-      var t = a.getAttribute(next === 'en' ? 'data-title-en' : 'data-title-zh');
-      if (t) a.setAttribute('title', t);
+  const root = document.documentElement;
+
+  function applyLang(lang: Lang) {
+    root.lang = lang;
+    root.classList.toggle('lang-en', lang === 'en');
+    root.classList.toggle('lang-zh', lang === 'zh');
+
+    const title = root.getAttribute(`data-page-title-${lang}`);
+    if (title) document.title = title;
+
+    // 带 data-aria-label-zh/en、data-title-zh/en 的元素随语言更新对应属性
+    document.querySelectorAll<HTMLElement>('[data-aria-label-zh]').forEach((el) => {
+      const label = el.getAttribute(`data-aria-label-${lang}`);
+      if (label) el.setAttribute('aria-label', label);
     });
-    document.querySelectorAll('[data-aria-label-zh]').forEach(function (el) {
-      var t = el.getAttribute(next === 'en' ? 'data-aria-label-en' : 'data-aria-label-zh');
-      if (t) el.setAttribute('aria-label', t);
+    document.querySelectorAll<HTMLElement>('[data-title-zh]').forEach((el) => {
+      const text = el.getAttribute(`data-title-${lang}`);
+      if (text) el.setAttribute('title', text);
     });
+  }
+
+  applyLang(root.lang === 'en' ? 'en' : 'zh');
+
+  document.getElementById('langToggle')?.addEventListener('click', () => {
+    const next: Lang = root.lang === 'zh' ? 'en' : 'zh';
+    try {
+      localStorage.setItem('lang', next);
+    } catch {}
+    applyLang(next);
   });
 </script>
 

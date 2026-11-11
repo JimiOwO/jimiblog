@@ -1,12 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GlobeBackground from '../components/GlobeBackground.astro';
-import { visitedPlaces } from '../config/visitedPlaces';
 import { contact } from '../config/mefacts';
-const pageTitle = "首页";
 ---
 
-<BaseLayout pageTitle={pageTitle} pageTitleZh="首页" pageTitleEn="Home">
+<BaseLayout pageTitle="首页" pageTitleZh="首页" pageTitleEn="Home">
   <section class="landing">
     <GlobeBackground />
     <h1 class="landing-title" id="landing-greeting">
@@ -15,7 +13,7 @@ const pageTitle = "首页";
     </h1>
     <div class="landing-contact">
       <div class="landing-email-wrap">
-        <button type="button" class="landing-email" data-email={contact.email} title="点击复制 / Click to copy">
+        <button type="button" class="landing-email" data-email={contact.email} title="点击复制" data-title-zh="点击复制" data-title-en="Click to copy">
           {contact.email}
         </button>
         <span class="landing-copy-hint" aria-live="polite" data-hint-zh="已复制" data-hint-en="Copied"></span>
@@ -23,47 +21,61 @@ const pageTitle = "首页";
       <a href={`tel:${contact.phoneTel}`} class="landing-contact-line">
         {contact.phone}
       </a>
-      <a href={`https://earth.google.com/web/@${contact.locationLat},${contact.locationLng},500a,90d,0y,0h,0t,0r`} target="_blank" rel="noopener noreferrer" class="landing-contact-line" title="在 Google Earth 中查看 / View in Google Earth">
+      <a
+        href={`https://earth.google.com/web/@${contact.locationLat},${contact.locationLng},500a,90d,0y,0h,0t,0r`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="landing-contact-line"
+        title="在 Google Earth 中查看"
+        data-title-zh="在 Google Earth 中查看"
+        data-title-en="View in Google Earth"
+      >
         {contact.locationLabel} · {contact.locationLat.toFixed(2)}°, {contact.locationLng.toFixed(2)}°
       </a>
-      <p class="landing-title-sub">{contact.title}</p>
     </div>
   </section>
 
   <script>
+    // 打字机效果：四种语言的问候语随机轮播
     (function () {
-      const words = ['你好！我是Jimi。', 'Hello! I\'m Jimi.', '初めまして！Jimiです。', 'Hej! Jag är Jimi.'];
-      const wordEl = document.querySelector('.landing-word');
-      const cursorEl = document.querySelector('.landing-cursor');
-      if (!wordEl || !cursorEl) return;
+      const words = ['你好！我是Jimi。', "Hello! I'm Jimi.", '初めまして！Jimiです。', 'Hej! Jag är Jimi.'];
+      const wordEl = document.querySelector<HTMLElement>('.landing-word');
+      if (!wordEl) return;
+
+      // 系统开启“减少动态效果”时不做打字动画，直接显示当前语言的问候语
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        wordEl.textContent = document.documentElement.lang === 'en' ? words[1] : words[0];
+        return;
+      }
 
       const typeDelay = 100;
       const deleteDelay = 20;
       const pauseAfterType = 1500;
       const pauseAfterDelete = 100;
 
-      let deck = [];
+      // 洗牌后依次取用，保证一轮内每句问候语各出现一次
+      let deck: number[] = [];
       function refillDeck() {
-        deck = words.map(function (_, i) { return i; });
-        for (var i = deck.length - 1; i > 0; i--) {
-          var j = Math.floor(Math.random() * (i + 1));
-          var t = deck[i]; deck[i] = deck[j]; deck[j] = t;
+        deck = words.map((_, i) => i);
+        for (let i = deck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]];
         }
       }
-      function nextIndex() {
+      function nextIndex(): number {
         if (deck.length === 0) refillDeck();
-        return deck.pop();
+        return deck.pop() ?? 0;
       }
       let wordIndex = nextIndex();
       let isDeleting = false;
 
       function tick() {
         const word = words[wordIndex];
-        const current = wordEl.textContent;
+        const current = wordEl!.textContent ?? '';
 
         if (!isDeleting) {
           if (current.length < word.length) {
-            wordEl.textContent = word.slice(0, current.length + 1);
+            wordEl!.textContent = word.slice(0, current.length + 1);
             setTimeout(tick, typeDelay);
           } else {
             isDeleting = true;
@@ -71,7 +83,7 @@ const pageTitle = "首页";
           }
         } else {
           if (current.length > 0) {
-            wordEl.textContent = current.slice(0, -1);
+            wordEl!.textContent = current.slice(0, -1);
             setTimeout(tick, deleteDelay);
           } else {
             isDeleting = false;
@@ -84,6 +96,7 @@ const pageTitle = "首页";
       setTimeout(tick, 400);
     })();
 
+    // 点击邮箱复制到剪贴板；复制失败时退回到 mailto 链接
     (function () {
       const btn = document.querySelector<HTMLButtonElement>('.landing-email');
       const hint = document.querySelector('.landing-copy-hint');
@@ -94,8 +107,8 @@ const pageTitle = "首页";
         e.preventDefault();
         try {
           await navigator.clipboard.writeText(email);
-          const isZh = document.documentElement.lang === 'zh' || document.documentElement.lang === 'zh-CN';
-          hint.textContent = isZh ? (hint.getAttribute('data-hint-zh') || '已复制') : (hint.getAttribute('data-hint-en') || 'Copied');
+          const isEn = document.documentElement.lang === 'en';
+          hint.textContent = isEn ? (hint.getAttribute('data-hint-en') || 'Copied') : (hint.getAttribute('data-hint-zh') || '已复制');
           hint.classList.add('is-visible');
           if (hideTimer) clearTimeout(hideTimer);
           hideTimer = setTimeout(function () {
@@ -155,16 +168,6 @@ const pageTitle = "首页";
   @keyframes cursor-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
-  }
-
-  .landing-title-sub {
-    margin: 0 0 var(--spacing-sm);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-normal);
-    color: var(--color-text-secondary);
-    line-height: var(--line-height-relaxed);
-    max-width: 28em;
-    text-align: center;
   }
 
   .landing-contact {
@@ -243,5 +246,4 @@ const pageTitle = "首页";
   .landing-copy-hint.is-visible {
     opacity: 1;
   }
-
 </style>

@@ -1,26 +1,36 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { type PostFrontmatter, formatDate } from '../utils/posts';
+
+interface Props {
+  frontmatter: PostFrontmatter & {
+    /** 可选的题图，显示在标题区与正文之间 */
+    image?: { url: string; alt?: string };
+  };
+}
+
 const { frontmatter } = Astro.props;
+const dateStr = formatDate(frontmatter.pubDate);
 ---
 
-<BaseLayout pageTitle={frontmatter.title}>
+<BaseLayout pageTitle={frontmatter.title} description={frontmatter.description}>
   <header class="post-header">
     <h1 class="post-title">{frontmatter.title}</h1>
     {frontmatter.description && <p class="post-description"><em>{frontmatter.description}</em></p>}
-    {frontmatter.pubDate && <p class="post-date">{new Date(frontmatter.pubDate).toISOString().slice(0, 10)}</p>}
+    {dateStr && <p class="post-date"><time datetime={dateStr}>{dateStr}</time></p>}
     <div class="post-tags">
-      {(frontmatter.tags ?? []).map((tag: string) => (
+      {(frontmatter.tags ?? []).map((tag) => (
         <span class="tag">
-          <a href={`/blog?tag=${tag}`}>{tag}</a>
+          <a href={`/blog?tag=${encodeURIComponent(tag)}`}>{tag}</a>
         </span>
       ))}
     </div>
   </header>
 
   {frontmatter.image && (
-    <img 
-      src={frontmatter.image.url} 
-      alt={frontmatter.image.alt}
+    <img
+      src={frontmatter.image.url}
+      alt={frontmatter.image.alt ?? ''}
       class="post-image"
     />
   )}

@@ -2,7 +2,7 @@
 layout: ../../layouts/MarkdownPostLayout.astro
 title: 猫のように生きる
 description: "僕の猫、ジンジン"
-pubDate: 2026-3-8
+pubDate: 2026-03-08
 tags: ["日本語"]
 ---
 ![Precious](/images/precious.jpg)

@@ -13,9 +13,9 @@ const { currentPath = '/' } = Astro.props;
       <ThemeIcon />
       <LangToggle />
     </div>
-    <a href="/" class="header-logo" aria-label="首页">
-      <img src="/icons/Jimi_dark.png" alt="" class="logo-img logo-light" />
-      <img src="/icons/Jimi_light.png" alt="" class="logo-img logo-dark" />
+    <a href="/" class="header-logo" aria-label="首页" data-aria-label-zh="首页" data-aria-label-en="Home">
+      <img src="/icons/Jimi_dark.png" alt="" width="80" height="80" class="logo-img logo-light" />
+      <img src="/icons/Jimi_light.png" alt="" width="80" height="80" class="logo-img logo-dark" />
     </a>
     <div class="header-nav-right">
       <Menu />
@@ -23,6 +23,68 @@ const { currentPath = '/' } = Astro.props;
     </div>
   </nav>
 </header>
+
+<script>
+  // 手机端：菜单按钮展开/收起导航面板；下滑隐藏顶栏，上滑一段距离后再显示
+  const menu = document.querySelector<HTMLButtonElement>('.menu');
+  const navLinks = document.querySelector<HTMLElement>('.nav-links');
+  const header = document.querySelector<HTMLElement>('.header-isolate');
+  const mobile = window.matchMedia('(max-width: 635px)');
+
+  function isMenuOpen(): boolean {
+    return menu?.getAttribute('aria-expanded') === 'true';
+  }
+
+  function setMenuOpen(open: boolean) {
+    navLinks?.classList.toggle('is-open', open);
+    menu?.setAttribute('aria-expanded', String(open));
+  }
+
+  menu?.addEventListener('click', () => setMenuOpen(!isMenuOpen()));
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && isMenuOpen()) {
+      setMenuOpen(false);
+      menu?.focus();
+    }
+  });
+
+  // 在手机与桌面宽度之间切换时，重置面板状态
+  mobile.addEventListener('change', () => setMenuOpen(false));
+
+  if (header) {
+    const SHOW_THRESHOLD = 52; // 顶栏高度；也是重新显示顶栏所需的最小上滑距离
+    let lastScrollY = window.scrollY;
+    let scrollUpAccum = 0;
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!mobile.matches) return;
+
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > lastScrollY) {
+          // 向下滑：重置上滑累计，隐藏顶栏并收起菜单
+          scrollUpAccum = 0;
+          if (currentScrollY > SHOW_THRESHOLD) {
+            header.classList.add('header-hidden');
+            setMenuOpen(false);
+          }
+        } else {
+          // 向上滑：累计上滑距离，超过阈值才显示顶栏
+          scrollUpAccum += lastScrollY - currentScrollY;
+          if (scrollUpAccum >= SHOW_THRESHOLD) {
+            header.classList.remove('header-hidden');
+          }
+        }
+
+        lastScrollY = currentScrollY;
+      },
+      { passive: true }
+    );
+  }
+</script>
 
 <style>
   .header-isolate {

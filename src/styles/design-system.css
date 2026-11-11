@@ -4,6 +4,9 @@
 
 /* 颜色系统 - Color System */
 :root {
+  /* 让滚动条、表单控件等浏览器原生界面跟随当前主题 */
+  color-scheme: light;
+
   /* 主色调 - Primary Colors */
   --color-primary: #b32a25;        /* Famicom 红 */
   --color-primary-dark: #821d1a;   /* 深红（用于阴影/边框） */
@@ -119,6 +122,8 @@
 
 /* 深色模式变量覆盖 */
 html.dark {
+  color-scheme: dark;
+
   --color-bg: var(--color-bg-dark);
   --color-bg-secondary: var(--color-bg-secondary-dark);
   --color-text: var(--color-text-dark);

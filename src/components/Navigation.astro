@@ -1,34 +1,26 @@
 ---
-import { navItems } from '../config/nav';
+import { navItems, isNavItemActive } from '../config/nav';
+
+interface Props {
+  currentPath?: string;
+}
+
 const { currentPath = '/' } = Astro.props;
 ---
 
 <div id="main-menu" class="nav-links">
-  {navItems.map(({ href, labelZh, labelEn }) => {
-    const isActive = currentPath === href;
+  {navItems.map((item) => {
+    const isActive = isNavItemActive(item, currentPath);
     return (
-      <a href={href} class:list={['nav-link', { active: isActive }]}>
-        <span class="lang-zh">{labelZh}</span>
-        <span class="lang-en">{labelEn}</span>
+      <a href={item.href} class:list={['nav-link', { active: isActive }]} aria-current={isActive ? 'page' : undefined}>
+        <span class="lang-zh">{item.labelZh}</span>
+        <span class="lang-en">{item.labelEn}</span>
       </a>
     );
   })}
 </div>
 
 <style>
-  .nav-link .lang-en {
-    display: none;
-  }
-  .nav-link .lang-zh {
-    display: inline;
-  }
-  html.lang-en .nav-link .lang-en {
-    display: inline;
-  }
-  html.lang-en .nav-link .lang-zh {
-    display: none;
-  }
-
   .nav-link.active {
     color: var(--color-primary);
     font-weight: var(--font-weight-black);

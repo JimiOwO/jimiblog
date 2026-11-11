@@ -12,10 +12,11 @@ import { visitedPlaces } from '../config/visitedPlaces';
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
 
+  // 只用到地理投影，所以加载 d3-geo 子模块即可，不必下载整个 d3
   var d3, topojson;
   try {
     var results = await Promise.all([
-      import('https://cdn.jsdelivr.net/npm/d3@7/+esm'),
+      import('https://cdn.jsdelivr.net/npm/d3-geo@3/+esm'),
       import('https://cdn.jsdelivr.net/npm/topojson-client@3/+esm')
     ]);
     d3 = results[0];
@@ -68,7 +69,10 @@ import { visitedPlaces } from '../config/visitedPlaces';
   var lastMoveY  = window.innerHeight / 2;
   var lastMoveAt = 0;
 
-  window.addEventListener('mousemove', function (e) {
+  // 系统开启“减少动态效果”时，地球保持静止：不自转、不跟随鼠标
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduceMotion) window.addEventListener('mousemove', function (e) {
     var dx   = e.clientX - lastMoveX;
     var dy   = e.clientY - lastMoveY;
     var dist = Math.sqrt(dx * dx + dy * dy);
@@ -99,12 +103,19 @@ import { visitedPlaces } from '../config/visitedPlaces';
     targetPhi    = newPhi;
   });
 
-  function isDark() {
-    return document.documentElement.classList.contains('dark');
+  // 主题相关的取值只在主题切换时读取一次，不在每一帧里重复查询
+  var dark = false;
+  var dotColor = '';
+
+  function readTheme() {
+    dark = document.documentElement.classList.contains('dark');
+    var style = getComputedStyle(document.documentElement);
+    dotColor = style.getPropertyValue(dark ? '--color-primary-light' : '--color-primary').trim();
   }
 
+  readTheme();
+
   function render() {
-    var dark = isDark();
     ctx.clearRect(0, 0, SIZE, SIZE);
     projection.rotate(rotation);
 
@@ -146,22 +157,15 @@ import { visitedPlaces } from '../config/visitedPlaces';
     ctx.stroke();
 
     // Visited place dots
-    var style = getComputedStyle(document.documentElement);
-    var dotColor = dark
-      ? style.getPropertyValue('--color-primary-light').trim()
-      : style.getPropertyValue('--color-primary').trim();
+    ctx.fillStyle = dotColor;
     placesData.forEach(function (place) {
       var projected = projection(place.coords);
       if (!projected) return;
-      var px = projected[0];
-      var py = projected[1];
 
       ctx.beginPath();
-      ctx.arc(px, py, 5, 0, Math.PI * 2);
-      ctx.fillStyle = dotColor;
+      ctx.arc(projected[0], projected[1], 5, 0, Math.PI * 2);
       ctx.fill();
     });
-
   }
 
   function animate() {
@@ -193,17 +197,26 @@ import { visitedPlaces } from '../config/visitedPlaces';
   }
 
   fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-    .then(function (r) { return r.json(); })
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(function (world) {
       land = topojson.feature(world, world.objects.land);
       borders = topojson.mesh(world, world.objects.countries, function (a, b) { return a !== b; });
+      render();
     })
     .catch(function (e) { console.warn('GlobeBackground: failed to load world atlas', e); });
 
-  animate();
+  // 静止模式只画一帧，之后仅在数据加载、主题切换、窗口缩放时重画
+  if (reduceMotion) render();
+  else animate();
 
-  new MutationObserver(function () { render(); })
-    .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  // 主题切换（html 的 class 变化）时更新颜色并重画
+  new MutationObserver(function () {
+    readTheme();
+    render();
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
   window.addEventListener('resize', function () {
     var newSize = getSize();
@@ -212,6 +225,7 @@ import { visitedPlaces } from '../config/visitedPlaces';
       canvas.width = SIZE;
       canvas.height = SIZE;
       projection.scale(SIZE / 2 - 2).translate([SIZE / 2, SIZE / 2]);
+      render();
     }
   });
 })();

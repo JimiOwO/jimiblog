@@ -1,11 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-const pageTitle = "简历";
 
 const pdfUrl = '/CV.pdf';
 ---
 
-<BaseLayout pageTitle={pageTitle} pageTitleZh="简历" pageTitleEn="CV">
+<BaseLayout pageTitle="简历" pageTitleZh="简历" pageTitleEn="CV">
   <div class="cv-container">
     <header class="cv-hero">
       <h1 class="cv-hero-bio bilingual-title">
@@ -13,7 +12,16 @@ const pdfUrl = '/CV.pdf';
         <span class="lang-en">What I have done<br>am doing<br>will do.</span>
       </h1>
     </header>
-    <a href={pdfUrl} target="_blank" rel="noopener noreferrer" class="cv-preview-link" title="在新标签页打开 PDF">
+    <!-- 整块预览就是一个指向 PDF 的链接；预览加载失败时仍可点击打开 -->
+    <a
+      href={pdfUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="cv-preview-link"
+      title="在新标签页打开 PDF"
+      data-title-zh="在新标签页打开 PDF"
+      data-title-en="Open the PDF in a new tab"
+    >
       <div class="cv-preview" id="pdf-container" data-pdf-url={pdfUrl}>
         <div class="cv-loading"><span class="lang-zh">正在加载简历…</span><span class="lang-en">Loading CV…</span></div>
       </div>
@@ -21,67 +29,66 @@ const pdfUrl = '/CV.pdf';
   </div>
 </BaseLayout>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
+  // 用 pdf.js 把 PDF 的每一页画到 canvas 上作为预览；pdf.js 从 CDN 按需加载
+  const PDFJS_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174';
+  const MAX_PIXEL_RATIO = 3;
+
   declare const pdfjsLib: any;
 
-  async function renderPDF() {
-    const container = document.getElementById('pdf-container');
-    if (!container) return;
+  function loadScript(src: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load ${src}`));
+      document.head.appendChild(script);
+    });
+  }
 
-    if (typeof pdfjsLib === 'undefined') {
-      setTimeout(renderPDF, 100);
-      return;
-    }
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
+  async function renderPDF(container: HTMLElement) {
     const pdfUrl = container.dataset.pdfUrl || '/CV.pdf';
 
     try {
-      const loadingTask = pdfjsLib.getDocument(pdfUrl);
-      const pdf = await loadingTask.promise;
+      await loadScript(`${PDFJS_BASE}/pdf.min.js`);
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}/pdf.worker.min.js`;
 
-      container.innerHTML = '';
+      const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
 
-      const MAX_PIXEL_RATIO = 3;
+      // 按容器内容区宽度（不含内边距）和屏幕像素比决定渲染分辨率；显示尺寸交给 CSS
+      const style = getComputedStyle(container);
+      const contentWidth =
+        container.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) || 375;
       const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
-      const firstPage = await pdf.getPage(1);
-      const baseViewport = firstPage.getViewport({ scale: 1 });
-      const containerWidth = container.clientWidth || document.documentElement.clientWidth || 375;
-      const scaleToFit = containerWidth / baseViewport.width;
-      const scale = scaleToFit * pixelRatio;
 
+      const pages: HTMLCanvasElement[] = [];
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
-        const viewport = page.getViewport({ scale });
+        const baseViewport = page.getViewport({ scale: 1 });
+        const viewport = page.getViewport({ scale: (contentWidth / baseViewport.width) * pixelRatio });
 
         const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
         canvas.className = 'cv-page';
-        canvas.style.width = containerWidth + 'px';
-        canvas.style.height = (containerWidth * viewport.height / viewport.width) + 'px';
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
 
-        await page.render({
-          canvasContext: context,
-          viewport: viewport
-        }).promise;
-        container.appendChild(canvas);
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        pages.push(canvas);
       }
+
+      container.replaceChildren(...pages);
     } catch (error) {
       console.error('PDF 加载失败:', error);
-      const openPdf = pdfUrl;
-      container.innerHTML = '<div class="cv-error"><span class="lang-zh">无法加载预览，<a href="' + openPdf + '" target="_blank" rel="noopener noreferrer">点击此处打开 PDF</a></span><span class="lang-en">Preview failed. <a href="' + openPdf + '" target="_blank" rel="noopener noreferrer">Click here to open PDF</a></span></div>';
+      container.innerHTML =
+        '<div class="cv-error">' +
+        '<span class="lang-zh">无法加载预览，点击此处打开 PDF</span>' +
+        '<span class="lang-en">Preview failed. Click here to open the PDF.</span>' +
+        '</div>';
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderPDF);
-  } else {
-    renderPDF();
-  }
+  const container = document.getElementById('pdf-container');
+  if (container) renderPDF(container);
 </script>
 
 <style>
@@ -126,26 +133,24 @@ const pdfUrl = '/CV.pdf';
     overflow-x: hidden;
   }
 
-  .cv-page {
+  /* .cv-page 与 .cv-error 由脚本动态创建，不带 Astro 的作用域标记，所以要用 :global() 才能选中 */
+  .cv-preview :global(.cv-page) {
     display: block;
-    max-width: 100%;
     width: 100%;
     height: auto;
     box-shadow: var(--shadow-md);
-    margin-bottom: var(--spacing-md);
     background: var(--color-white);
     pointer-events: none;
-    box-sizing: border-box;
   }
 
   .cv-loading,
-  .cv-error {
+  .cv-preview :global(.cv-error) {
     padding: var(--spacing-xl);
     text-align: center;
     color: var(--color-text-secondary);
   }
 
-  .cv-error span {
+  .cv-preview :global(.cv-error span) {
     color: var(--color-link);
     font-weight: var(--font-weight-bold);
     text-decoration: underline;

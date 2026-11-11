@@ -69,14 +69,16 @@ import { interests } from '../../config/interests';
       var panelBodyEn = document.getElementById('about-panel-body-en');
       var panelClose = document.getElementById('about-panel-close');
       var panelFullpage = document.getElementById('about-panel-fullpage');
+      var lastFocusedCard = null;
+      if (!panel || !backdrop) return;
 
       function closePanel() {
-        if (panel && backdrop) {
-          panel.classList.remove('about-panel--open');
-          panel.setAttribute('aria-hidden', 'true');
-          backdrop.classList.remove('about-backdrop--visible');
-          backdrop.setAttribute('aria-hidden', 'true');
-        }
+        panel.classList.remove('about-panel--open');
+        panel.setAttribute('aria-hidden', 'true');
+        backdrop.classList.remove('about-backdrop--visible');
+        // 关闭后把焦点还给打开弹层的那张卡片
+        if (lastFocusedCard) lastFocusedCard.focus();
+        lastFocusedCard = null;
       }
 
       function openPanel(card) {
@@ -98,14 +100,16 @@ import { interests } from '../../config/interests';
         panel.classList.add('about-panel--open');
         panel.setAttribute('aria-hidden', 'false');
         backdrop.classList.add('about-backdrop--visible');
-        backdrop.setAttribute('aria-hidden', 'false');
+        // 打开后把焦点移进弹层，键盘用户可以直接 Tab / Esc
+        lastFocusedCard = card;
+        if (panelClose) panelClose.focus();
       }
 
       backdrop.addEventListener('click', closePanel);
       if (panelClose) panelClose.addEventListener('click', closePanel);
       if (panelFullpage) panelFullpage.addEventListener('click', function (e) { e.stopPropagation(); });
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && panel && panel.classList.contains('about-panel--open')) closePanel();
+        if (e.key === 'Escape' && panel.classList.contains('about-panel--open')) closePanel();
       });
 
       cards.forEach(function (card) {
@@ -270,12 +274,14 @@ import { interests } from '../../config/interests';
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-lg);
     opacity: 0;
+    visibility: hidden; /* 关闭时把里面的按钮和链接移出 Tab 顺序 */
     pointer-events: none;
     overflow: auto;
   }
 
   .about-panel--open {
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
     animation: about-panel-expand 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
